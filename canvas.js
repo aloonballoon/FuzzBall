@@ -5,6 +5,29 @@ canvas.height = 700;
 
 const context = canvas.getContext('2d');
 
+const mouse = {
+  x: undefined,
+  y: undefined
+};
+
+canvas.addEventListener('mousemove', (event) => {
+  let x = event.x;
+  let y = event.y;
+
+  x -= canvas.offsetLeft;
+  y -= canvas.offsetTop;
+  mouse.x = x;
+  mouse.y = y;
+
+});
+//
+// window.addEventListener('resize', () => {
+//   canvas.width = canvas.width;
+//   canvas.height = canvas.height;
+// });
+
+
+
 // context.fillStyle = 'rgba(0, 255, 0, 1)';
 // context.fillRect(100, 100, 100, 100);
 // context.fillStyle = 'blue';
@@ -61,7 +84,6 @@ class Circle {
   }
 
   draw() {
-    context.strokeStyle = this.color;
     context.fillStyle = this.color;
     context.fill();
     context.beginPath();
@@ -86,30 +108,41 @@ class Circle {
 
 }
 
+let circle1;
+let circle3;
+
+const init = () => {
+  circle1 = new Circle(300, 300, 5, 5, 100, 'black');
+  circle3 = new Circle(undefined, undefined, 0, 0, 100, 'red');
+};
 
 
 let circleArr = [];
 
-for (let i = 0; i < 40; i++) {
-  let color = getRandomColor();
-  let radius = 10;
-  let x = Math.random() * (canvas.width - radius * 2) + radius;
-  let y = Math.random() * (canvas.height - radius * 2) + radius;
-  let dx = (Math.random() - 0.5) * 2;
-  let dy = (Math.random() - 0.5) * 2;
-  circleArr.push(new Circle(x, y, dx, dy, radius, color));
-}
+// for (let i = 0; i < 40; i++) {
+//   let color = getRandomColor();
+//   let radius = 10;
+//   let x = Math.random() * (canvas.width - radius * 2) + radius;
+//   let y = Math.random() * (canvas.height - radius * 2) + radius;
+//   let dx = (Math.random() - 0.5) * 2;
+//   let dy = (Math.random() - 0.5) * 2;
+//   circleArr.push(new Circle(x, y, dx, dy, radius, color));
+// }
 
 
 
 const animate = () => {
     requestAnimationFrame(animate);
     context.clearRect(0, 0, innerWidth, innerHeight);
+    circle1.update();
+    circle3.x = mouse.x;
+    circle3.y = mouse.y;
+    circle3.update();
 
-    for (let i = 0; i < circleArr.length; i++) {
-      circleArr[i].update();
-    }
-
+    // for (let i = 0; i < circleArr.length; i++) {
+    //   circleArr[i].update();
+    // }
   };
 
+  init();
   animate();

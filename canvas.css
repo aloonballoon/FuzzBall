@@ -10,6 +10,13 @@ canvas {
 .canvas-section {
   height: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.canvas-h1 {
+  margin-bottom: 30px;
+  font-size: 40px;
+  font-weight: bolder;
 }
