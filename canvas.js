@@ -1,14 +1,26 @@
 const canvas = document.querySelector('canvas');
 
-canvas.width = 1000;
-canvas.height = 700;
 
 const context = canvas.getContext('2d');
+
 
 const mouse = {
   x: undefined,
   y: undefined
 };
+
+let circle1;
+let circle2;
+let particles;
+
+let gridHeight = 30;
+let gridColCount = 40;
+let gridRowCount = 25;
+canvas.height = gridHeight * gridRowCount;
+canvas.width = gridHeight * gridColCount;
+
+let gridId = 0;
+let grid = [];
 
 canvas.addEventListener('mousemove', (event) => {
   let x = event.x;
@@ -18,38 +30,11 @@ canvas.addEventListener('mousemove', (event) => {
   y -= canvas.offsetTop;
   mouse.x = x;
   mouse.y = y;
-
 });
-//
-// window.addEventListener('resize', () => {
-//   canvas.width = canvas.width;
-//   canvas.height = canvas.height;
-// });
 
-
-
-// context.fillStyle = 'rgba(0, 255, 0, 1)';
-// context.fillRect(100, 100, 100, 100);
-// context.fillStyle = 'blue';
-// context.fillRect(300, 100, 100, 100);
-// context.fillRect(300, 300, 100, 100);
-// context.fillRect(100, 300, 100, 100);
-// context.fillStyle = 'purple';
-// context.fillRect(200, 200, 100, 100);
-
-//line
-// context.beginPath();
-// context.moveTo(50, 500);
-// context.lineTo(300, 600);
-// context.lineTo(400, 700);
-// context.strokeStyle = 'pink';
-// context.stroke();
-
-//arc
-// context.strokeStyle = 'green';
-// context.beginPath();
-// context.arc(500, 500, 100, 0, Math.PI * 2, false);
-// context.stroke();
+canvas.addEventListener('click', () => {
+  
+});
 
 const getRandomColor = () => {
   const letters = '0123456789ABCDEF';
@@ -59,15 +44,66 @@ const getRandomColor = () => {
   }
   return color;
 };
-//
-// for (let i = 0; i < 10; i++) {
-//   let x = Math.random() * window.innerWidth;
-//   let y = Math.random() * window.innerHeight;
-//   context.strokeStyle = getRandomColor();
-//   context.beginPath();
-//   context.arc(x, y, 100, 0, Math.PI * 2, false);
-//   context.stroke();
-// }
+
+class Grid {
+  constructor(gridHeight, gridX, gridY, gridId, gridStatus) {
+    this.gridHeight = gridHeight;
+    this.gridX = gridX;
+    this.gridY = gridY;
+    this.gridId = gridId;
+    this.gridStatus = gridStatus;
+  }
+
+  draw() {
+    debugger
+    context.beginPath();
+    context.rect(this.gridX, this.gridY, this.gridHeight, this.gridHeight);
+    context.strokeStyle = "black";
+    context.stroke();
+    context.closePath();
+  }
+}
+
+for (let c = 0; c < gridColCount; c++) {
+  grid[c] = [];
+  for (let r = 0; r < gridRowCount; r++) {
+    grid[c][r] = new Grid(0, 0, 0, gridId, 0);
+    gridId += 1;
+  }
+}
+
+const drawGrid = () => {
+  for (let c = 0; c < gridColCount; c++) {
+    for (let r = 0; r < gridRowCount; r++) {
+      if (grid[c][r].gridStatus === 0) {
+        let gridX = (c * gridHeight);
+        let gridY = (r * gridHeight);
+        grid[c][r].gridHeight = gridHeight;
+        grid[c][r].gridX = gridX;
+        grid[c][r].gridY = gridY;
+        grid[c][r].addEventListener('click', () => {
+          console.log("help!");
+        });
+        grid[c][r].draw();
+
+      }
+    }
+  }
+};
+
+class Line {
+  constructor(direction) {
+    this.direction = direction;
+  }
+
+  draw() {
+    context.beginPath();
+    context.strokeStyle = 'red';
+    context.moveTo(mouse.x, mouse.y);
+    context.lineTo(mouse.x, 0);
+    context.stroke();
+  }
+}
 
 const resolveCollision = (particle1, particle2) => {
     const deltaVelocityX = particle1.velocity.x - particle2.velocity.x;
@@ -110,20 +146,6 @@ const rotate = (velocity, angle) => {
 
     return rotatedVelocities;
 };
-
-class Line {
-  constructor(direction) {
-    this.direction = direction;
-  }
-
-  draw() {
-    this.stroke
-  }
-}
-
-
-
-
 
 class Circle {
 
@@ -174,21 +196,16 @@ class Circle {
 
  }
 
-
-let circle1;
-let circle2;
-let particles;
-
 const init = () => {
   particles = [];
 
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 1; i++) {
     let color = getRandomColor();
     let radius = 50;
     let x = Math.random() * (canvas.width - radius * 2) + radius;
     let y = Math.random() * (canvas.height - radius * 2) + radius;
-    let dx = (Math.random() - 0.5) * 10;
-    let dy = (Math.random() - 0.5) * 10;
+    let dx = (Math.random() - 0.5) * 20;
+    let dy = (Math.random() - 0.5) * 20;
 
     if (i !== 0) {
       for (let j = 0; j < particles.length; j++) {
@@ -204,9 +221,6 @@ const init = () => {
   }
 };
 
-
-
-
 const getDistance = (x1,y1, x2, y2) => {
   let xDistance = x2 - x1;
   let yDistance = y2 - y1;
@@ -220,15 +234,12 @@ const animate = () => {
     requestAnimationFrame(animate);
     context.clearRect(0, 0, innerWidth, innerHeight);
 
-    // if (getDistance(circle1.x, circle1.y, circle2.x, circle2.y) < circle1.radius + circle2.radius) {
-    //   circle1.color = "purple";
-    // } else if (getDistance(circle1.x, circle1.y, circle2.x, circle2.y) > circle1.radius + circle2.radius) {
-    //   circle1.color = 'yellow';
-    // }
-
     for (let i = 0; i < particles.length; i++) {
       particles[i].update(particles);
     }
+    drawGrid();
+
+
   };
 
   init();
