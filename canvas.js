@@ -6,7 +6,8 @@ const context = canvas.getContext('2d');
 
 const mouse = {
   x: undefined,
-  y: undefined
+  y: undefined,
+  direction: 'vertical'
 };
 
 let circle1;
@@ -32,9 +33,44 @@ canvas.addEventListener('mousemove', (event) => {
   mouse.y = y;
 });
 
-canvas.addEventListener('click', () => {
-  
-});
+canvas.addEventListener('contextmenu', (event) => {
+    event.preventDefault();
+    switch (mouse.direction) {
+      case 'vertical':
+        mouse.direction = 'horizontal';
+        break;
+      case 'horizontal':
+        mouse.direction = 'vertical';
+        break;
+      default:
+        return null;
+    }
+    console.log(mouse.direction);
+    return false;
+}, false);
+
+const blackoutSq = () => {
+  let box;
+  for (let c = 0; c < gridColCount ; c++) {
+    for (let r = 0; r < gridRowCount; r++) {
+      box = grid[c][r];
+      if (mouse.x >= box.gridX && mouse.x <= box.gridHeight + box.gridX && mouse.y >= box.gridY && mouse.y <= box.gridY + box.gridHeight) {
+        box.gridStatus = 1;
+      }
+    }
+      }
+};
+
+const handleClick = (event) => {
+  let clickX = event.x;
+  let clickY = event.y;
+
+  clickX -= canvas.offsetLeft;
+  clickY -= canvas.offsetTop;
+  mouse.x = clickX;
+  mouse.y = clickY;
+  blackoutSq();
+};
 
 const getRandomColor = () => {
   const letters = '0123456789ABCDEF';
@@ -45,6 +81,7 @@ const getRandomColor = () => {
   return color;
 };
 
+
 class Grid {
   constructor(gridHeight, gridX, gridY, gridId, gridStatus) {
     this.gridHeight = gridHeight;
@@ -54,11 +91,20 @@ class Grid {
     this.gridStatus = gridStatus;
   }
 
-  draw() {
-    debugger
+  drawEmpty() {
     context.beginPath();
     context.rect(this.gridX, this.gridY, this.gridHeight, this.gridHeight);
     context.strokeStyle = "black";
+    context.stroke();
+    context.closePath();
+  }
+
+  drawFull() {
+    context.beginPath();
+    context.rect(this.gridX, this.gridY, this.gridHeight, this.gridHeight);
+    context.strokeStyle = "black";
+    context.fillStyle = "black";
+    context.fill();
     context.stroke();
     context.closePath();
   }
@@ -75,17 +121,15 @@ for (let c = 0; c < gridColCount; c++) {
 const drawGrid = () => {
   for (let c = 0; c < gridColCount; c++) {
     for (let r = 0; r < gridRowCount; r++) {
-      if (grid[c][r].gridStatus === 0) {
         let gridX = (c * gridHeight);
         let gridY = (r * gridHeight);
         grid[c][r].gridHeight = gridHeight;
         grid[c][r].gridX = gridX;
         grid[c][r].gridY = gridY;
-        grid[c][r].addEventListener('click', () => {
-          console.log("help!");
-        });
-        grid[c][r].draw();
-
+      if (grid[c][r].gridStatus === 0) {
+        grid[c][r].drawEmpty();
+      } else if (grid[c][r].gridStatus === 1) {
+        grid[c][r].drawFull();
       }
     }
   }
@@ -166,6 +210,8 @@ class Circle {
     context.strokeStyle = this.color;
     context.beginPath();
     context.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+    context.fillStyle = this.color;
+    context.fill();
     context.stroke();
   }
 
@@ -199,9 +245,9 @@ class Circle {
 const init = () => {
   particles = [];
 
-  for (let i = 0; i < 1; i++) {
+  for (let i = 0; i < 20; i++) {
     let color = getRandomColor();
-    let radius = 50;
+    let radius = 10;
     let x = Math.random() * (canvas.width - radius * 2) + radius;
     let y = Math.random() * (canvas.height - radius * 2) + radius;
     let dx = (Math.random() - 0.5) * 20;
@@ -228,6 +274,7 @@ const getDistance = (x1,y1, x2, y2) => {
   return Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
 };
 
+canvas.addEventListener('click', handleClick);
 
 
 const animate = () => {
