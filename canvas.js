@@ -191,8 +191,32 @@ class Line {
     this.lineId = lineId;
   }
 
-  topLineToLineDistance(otherLine) {
+  bottomLineToLineDistance(otherLine) {
+    let xTouching;
+    let yTouching;
 
+    yTouching = this.lineY + this.height === otherLine.lineY;
+    xTouching = ((this.lineX > otherLine.lineX) && (this.lineX < (otherLine.lineX + otherLine.width))) || ((this.lineX < otherLine.lineX) && (this.lineX > (otherLine.lineX + otherLine.width))) || this.lineX === otherLine.lineX;
+
+    if (xTouching) {
+    }
+    if (xTouching && yTouching) {
+      return true;
+    }
+  }
+
+  topLineToLineDistance(otherLine) {
+    let xTouching;
+    let yTouching;
+
+    yTouching = this.lineY + this.height === otherLine.lineY + otherLine.gridHeight;
+    xTouching = ((this.lineX > otherLine.lineX) && (this.lineX < (otherLine.lineX + otherLine.width))) || ((this.lineX < otherLine.lineX) && (this.lineX > (otherLine.lineX + otherLine.width))) || this.lineX === otherLine.lineX;
+
+    if (xTouching) {
+    }
+    if (xTouching && yTouching) {
+      return true;
+    }
   }
 
   rightLineToLineDistance(otherLine) {
@@ -235,6 +259,14 @@ class Line {
         }
       } else if (this.side === "left") {
         if (this.leftLineToLineDistance(lines[i])) {
+          this.status = "stopped";
+        }
+      } else if (this.side === "top") {
+        if (this.topLineToLineDistance(lines[i])) {
+          this.status = "stopped";
+        }
+      } else if (this.side === "bottom") {
+        if (this.bottomLineToLineDistance(lines[i])) {
           this.status = "stopped";
         }
       }
