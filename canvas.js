@@ -1,6 +1,4 @@
 const canvas = document.querySelector('canvas');
-
-
 const context = canvas.getContext('2d');
 
 
@@ -17,6 +15,7 @@ let particles;
 let gridHeight = 30;
 let gridColCount = 40;
 let gridRowCount = 25;
+
 canvas.height = gridHeight * gridRowCount;
 canvas.width = gridHeight * gridColCount;
 
@@ -45,21 +44,42 @@ canvas.addEventListener('contextmenu', (event) => {
       default:
         return null;
     }
-    console.log(mouse.direction);
     return false;
 }, false);
 
-const blackoutSq = () => {
+// const blackoutSq = () => {
+//   let box;
+//   for (let c = 0; c < gridColCount ; c++) {
+//     for (let r = 0; r < gridRowCount; r++) {
+//       box = grid[c][r];
+//       if (mouse.x >= box.gridX && mouse.x <= box.gridHeight + box.gridX && mouse.y >= box.gridY && mouse.y <= box.gridY + box.gridHeight) {
+//         box.gridStatus = 1;
+//       }
+//     }
+//       }
+// };
+
+const drawLines = () => {
   let box;
   for (let c = 0; c < gridColCount ; c++) {
     for (let r = 0; r < gridRowCount; r++) {
       box = grid[c][r];
-      if (mouse.x >= box.gridX && mouse.x <= box.gridHeight + box.gridX && mouse.y >= box.gridY && mouse.y <= box.gridY + box.gridHeight) {
-        box.gridStatus = 1;
+      if (mouse.direction === 'vertical') {
+        if (mouse.x >= box.gridX && mouse.x <= box.gridHeight + box.gridX && mouse.y >= box.gridY && mouse.y <= box.gridY + box.gridHeight ) {
+          const line = new Line(box.gridX, box.gridY, mouse.direction, box.gridHeight);
+          lines.push(line);
+        }
+      } else if (mouse.direction === 'horizontal') {
+          if (mouse.x >= box.gridX && mouse.x <= box.gridHeight + box.gridX && mouse.y >= box.gridY && mouse.y <= box.gridY + box.gridHeight) {
+            const line = new Line(box.gridX, box.gridY, mouse.direction, box.gridHeight);
+            lines.push(line);
+          }
+        }
       }
     }
-      }
 };
+
+let lines = [];
 
 const handleClick = (event) => {
   let clickX = event.x;
@@ -69,8 +89,9 @@ const handleClick = (event) => {
   clickY -= canvas.offsetTop;
   mouse.x = clickX;
   mouse.y = clickY;
-  blackoutSq();
+  drawLines();
 };
+
 
 const getRandomColor = () => {
   const letters = '0123456789ABCDEF';
@@ -136,16 +157,31 @@ const drawGrid = () => {
 };
 
 class Line {
-  constructor(direction) {
+  constructor(lineX, lineY, direction, gridHeight) {
     this.direction = direction;
+    this.lineX = lineX;
+    this.lineY = lineY;
+    this.gridHeight = gridHeight;
+    this.width = this.gridHeight;
+    this.height = this.gridHeight;
+    this.dW = 5;
+    this.dH = 5;
   }
 
   draw() {
     context.beginPath();
-    context.strokeStyle = 'red';
-    context.moveTo(mouse.x, mouse.y);
-    context.lineTo(mouse.x, 0);
-    context.stroke();
+    context.fillStyle = 'red';
+    context.fillRect(this.lineX, this.lineY, this.width, this.height);
+  }
+
+  update(){
+    if (this.direction === 'horizontal') {
+      this.draw();
+      this.width += this.dW;
+    } else if (this.direction === 'vertical') {
+      this.draw();
+      this.height -= this.dH;
+    }
   }
 }
 
@@ -285,6 +321,10 @@ const animate = () => {
       particles[i].update(particles);
     }
     drawGrid();
+
+    for (let i = 0; i < lines.length; i++) {
+      lines[i].update();
+    }
 
 
   };
