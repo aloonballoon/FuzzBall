@@ -65,14 +65,19 @@ const drawLines = () => {
     for (let r = 0; r < gridRowCount; r++) {
       box = grid[c][r];
       if (mouse.direction === 'vertical') {
-        if (mouse.x >= box.gridX && mouse.x <= box.gridHeight + box.gridX && mouse.y >= box.gridY && mouse.y <= box.gridY + box.gridHeight ) {
-          const line = new Line(box.gridX, box.gridY, mouse.direction, box.gridHeight);
-          lines.push(line);
+        if (mouse.x > box.gridX && mouse.x < box.gridHeight + box.gridX && mouse.y > box.gridY && mouse.y < box.gridY + box.gridHeight ) {
+          const line1 = new Line(box.gridX, box.gridY, mouse.direction, box.gridHeight, "bottom");
+          lines.push(line1);
+          const line2 = new Line(box.gridX, box.gridY, mouse.direction, box.gridHeight, "top");
+          lines.push(line2);
+
         }
       } else if (mouse.direction === 'horizontal') {
-          if (mouse.x >= box.gridX && mouse.x <= box.gridHeight + box.gridX && mouse.y >= box.gridY && mouse.y <= box.gridY + box.gridHeight) {
-            const line = new Line(box.gridX, box.gridY, mouse.direction, box.gridHeight);
-            lines.push(line);
+          if (mouse.x > box.gridX && mouse.x < box.gridHeight + box.gridX && mouse.y > box.gridY && mouse.y < box.gridY + box.gridHeight) {
+            const line1 = new Line(box.gridX, box.gridY, mouse.direction, box.gridHeight, "right");
+            lines.push(line1);
+            const line2 = new Line(box.gridX, box.gridY, mouse.direction, box.gridHeight, "left");
+            lines.push(line2);
           }
         }
       }
@@ -157,7 +162,7 @@ const drawGrid = () => {
 };
 
 class Line {
-  constructor(lineX, lineY, direction, gridHeight) {
+  constructor(lineX, lineY, direction, gridHeight, side) {
     this.direction = direction;
     this.lineX = lineX;
     this.lineY = lineY;
@@ -166,6 +171,7 @@ class Line {
     this.height = this.gridHeight;
     this.dW = 5;
     this.dH = 5;
+    this.side = side;
   }
 
   draw() {
@@ -176,11 +182,29 @@ class Line {
 
   update(){
     if (this.direction === 'horizontal') {
-      this.draw();
-      this.width += this.dW;
+      if (this.side === 'right') {
+          context.beginPath();
+          context.fillStyle = 'red';
+          context.fillRect(this.lineX, this.lineY, this.width, this.height);
+          this.width += this.dW;
+      } else if (this.side === 'left') {
+          context.beginPath();
+          context.fillStyle = 'blue';
+          context.fillRect(this.lineX, this.lineY, this.width, this.height);
+          this.width -= this.dW;
+      }
     } else if (this.direction === 'vertical') {
-      this.draw();
-      this.height -= this.dH;
+      if (this.side === 'bottom') {
+        context.beginPath();
+        context.fillStyle = 'red';
+        context.fillRect(this.lineX, this.lineY, this.width, this.height);
+        this.height += this.dH;
+      } else if (this.side === 'top') {
+        context.beginPath();
+        context.fillStyle = 'blue';
+        context.fillRect(this.lineX, this.lineY, this.width, this.height);
+        this.height -= this.dH;
+      }
     }
   }
 }
