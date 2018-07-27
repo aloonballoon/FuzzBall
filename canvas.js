@@ -13,10 +13,11 @@ let circle2;
 let particles;
 
 let gridHeight = 30;
-let gridColCount = 40;
-let gridRowCount = 25;
+let gridColCount = 30;
+let gridRowCount = 20;
 
 let lineId = 0;
+let pairId = 0;
 
 canvas.height = gridHeight * gridRowCount;
 canvas.width = gridHeight * gridColCount;
@@ -49,18 +50,6 @@ canvas.addEventListener('contextmenu', (event) => {
     return false;
 }, false);
 
-// const blackoutSq = () => {
-//   let box;
-//   for (let c = 0; c < gridColCount ; c++) {
-//     for (let r = 0; r < gridRowCount; r++) {
-//       box = grid[c][r];
-//       if (mouse.x >= box.gridX && mouse.x <= box.gridHeight + box.gridX && mouse.y >= box.gridY && mouse.y <= box.gridY + box.gridHeight) {
-//         box.gridStatus = 1;
-//       }
-//     }
-//       }
-// };
-
 const drawLines = () => {
   let box;
   for (let c = 0; c < gridColCount ; c++) {
@@ -68,19 +57,23 @@ const drawLines = () => {
       box = grid[c][r];
       if (mouse.direction === 'vertical') {
         if (mouse.x > box.gridX && mouse.x < box.gridHeight + box.gridX && mouse.y > box.gridY && mouse.y < box.gridY + box.gridHeight ) {
-          const line1 = new Line(box.gridX, box.gridY, mouse.direction, box.gridHeight, "bottom", lineId, "moving");
+          const line1 = new Line(box.gridX, box.gridY, mouse.direction, box.gridHeight, "bottom", pairId, "moving", lineId);
           lines.push(line1);
-          const line2 = new Line(box.gridX, box.gridY, mouse.direction, box.gridHeight, "top", lineId, "moving");
+          lineId += 1;
+          const line2 = new Line(box.gridX, box.gridY, mouse.direction, box.gridHeight, "top", pairId, "moving", lineId);
           lines.push(line2);
           lineId += 1;
+          pairId += 1;
 
         }
       } else if (mouse.direction === 'horizontal') {
           if (mouse.x > box.gridX && mouse.x < box.gridHeight + box.gridX && mouse.y > box.gridY && mouse.y < box.gridY + box.gridHeight) {
-            const line1 = new Line(box.gridX, box.gridY, mouse.direction, box.gridHeight, "right", lineId, "moving");
+            const line1 = new Line(box.gridX, box.gridY, mouse.direction, box.gridHeight, "right", pairId, "moving", lineId);
             lines.push(line1);
-            const line2 = new Line(box.gridX, box.gridY, mouse.direction, box.gridHeight, "left", lineId, "moving");
+            lineId += 1;
+            const line2 = new Line(box.gridX, box.gridY, mouse.direction, box.gridHeight, "left", pairId, "moving", lineId);
             lines.push(line2);
+            pairId += 1;
             lineId += 1;
           }
         }
@@ -98,7 +91,18 @@ const handleClick = (event) => {
   clickY -= canvas.offsetTop;
   mouse.x = clickX;
   mouse.y = clickY;
-  drawLines();
+  if (checkLineMoving()) {
+    drawLines();
+  }
+};
+
+const checkLineMoving = () => {
+  for (let i = 0; i < lines.length; i++) {
+    if (lines[i].status === "moving") {
+      return false;
+    }
+  }
+  return true;
 };
 
 
@@ -151,11 +155,14 @@ for (let c = 0; c < gridColCount; c++) {
 const drawGrid = () => {
   for (let c = 0; c < gridColCount; c++) {
     for (let r = 0; r < gridRowCount; r++) {
+
         let gridX = (c * gridHeight);
         let gridY = (r * gridHeight);
+
         grid[c][r].gridHeight = gridHeight;
         grid[c][r].gridX = gridX;
         grid[c][r].gridY = gridY;
+
       if (grid[c][r].gridStatus === 0) {
         grid[c][r].drawEmpty();
       } else if (grid[c][r].gridStatus === 1) {
@@ -166,7 +173,7 @@ const drawGrid = () => {
 };
 
 class Line {
-  constructor(lineX, lineY, direction, gridHeight, side, lineId, status) {
+  constructor(lineX, lineY, direction, gridHeight, side, pairId, status, lineId) {
     this.direction = direction;
     this.lineX = lineX;
     this.lineY = lineY;
@@ -179,32 +186,60 @@ class Line {
     this.blue = 'rgb(0,0,255, 0.8)';
     this.red = 'rgb(255,0,0, 0.8)';
     this.black = 'black';
-    this.lineId = lineId;
+    this.pairId = pairId;
     this.status = status;
+    this.lineId = lineId;
   }
 
-  // getXLineDistance(lineOneX, lineTwoX) {
-  //   let xDistance = lineOneX - lineTwoX;
-  //   debugger
-  //   return xDistance;
-  // }
-  //
-  // getYLineDistance(lineOneY, lineTwoY) {
-  //   let yDistance = lineOneY - lineTwoY;
-  //   return yDistance;
-  // }
-  //
-  // checkLineCollision() {
-  //   for (let i = 0; i < lines.length; i++) {
-  //     if (this.lineId === lines[i].lineId) {
-  //       debugger
-  //       continue;
-  //     }
-  //     if (this.getXLineDistance(this.lineX, lines[i].lineX) === 0) {
-  //       console.log('touching');
-  //     }
-  //   }
-  // }
+  topLineToLineDistance(otherLine) {
+
+  }
+
+  rightLineToLineDistance(otherLine) {
+    let xTouching;
+    let yTouching;
+
+    xTouching = this.lineX + this.width === otherLine.lineX;
+    yTouching = ((this.lineY > otherLine.lineY) && (this.lineY < (otherLine.lineY + otherLine.height))) || ((this.lineY < otherLine.lineY) && (this.lineY > (otherLine.lineY + otherLine.height))) || this.lineY === otherLine.lineY;
+
+    if (xTouching) {
+    }
+    if (xTouching && yTouching) {
+      return true;
+    }
+  }
+
+  leftLineToLineDistance(otherLine) {
+    let xTouching;
+    let yTouching;
+
+    xTouching = this.lineX + this.width - this.gridHeight === otherLine.lineX;
+    yTouching = ((this.lineY > otherLine.lineY) && (this.lineY < (otherLine.lineY + otherLine.height))) || ((this.lineY < otherLine.lineY) && (this.lineY > (otherLine.lineY + otherLine.height))) || this.lineY === otherLine.lineY;
+
+    if (xTouching) {
+    }
+    if (xTouching && yTouching) {
+      return true;
+    }
+  }
+
+
+  checkLineCollision() {
+    for (let i = 0; i < lines.length; i++) {
+      if (this.pairId === lines[i].pairId) {
+        continue;
+      }
+      if (this.side === "right") {
+        if (this.rightLineToLineDistance(lines[i])) {
+          this.status = "stopped";
+        }
+      } else if (this.side === "left") {
+        if (this.leftLineToLineDistance(lines[i])) {
+          this.status = "stopped";
+        }
+      }
+    }
+  }
 
   checkWallCollision() {
     if (this.side === "right") {
@@ -229,35 +264,40 @@ class Line {
 
   update(){
     this.checkWallCollision();
+    this.checkLineCollision();
     if (this.direction === 'horizontal') {
+
       if (this.side === 'right' && this.status === "moving") {
           context.beginPath();
           context.fillStyle = this.red;
           context.fillRect(this.lineX, this.lineY, this.width, this.height);
           this.width += this.dW;
-          // this.checkWallCollision();
+
       } else if (this.side === 'left' && this.status === "moving") {
           context.beginPath();
           context.fillStyle = this.blue;
           context.fillRect(this.lineX, this.lineY, this.width, this.height);
           this.width -= this.dW;
-          // this.checkWallCollision();
+
       } else if (this.status === "stopped") {
         context.beginPath();
         context.fillStyle = this.black;
         context.fillRect(this.lineX, this.lineY, this.width, this.height);
       }
     } else if (this.direction === 'vertical') {
+
       if (this.side === 'bottom' && this.status === "moving") {
         context.beginPath();
         context.fillStyle = this.red;
         context.fillRect(this.lineX, this.lineY, this.width, this.height);
         this.height += this.dH;
+
       } else if (this.side === 'top' && this.status === "moving") {
         context.beginPath();
         context.fillStyle = this.blue;
         context.fillRect(this.lineX, this.lineY, this.width, this.height);
         this.height -= this.dH;
+
       } else if (this.status === "stopped") {
         context.beginPath();
         context.fillStyle = this.black;
@@ -326,7 +366,7 @@ class Circle {
   }
 
   draw() {
-    context.strokeStyle = this.color;
+    context.strokeStyle = "black";
     context.beginPath();
     context.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
     context.fillStyle = this.color;
@@ -364,7 +404,7 @@ class Circle {
 const init = () => {
   particles = [];
 
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 5; i++) {
     let color = getRandomColor();
     let radius = 10;
     let x = Math.random() * (canvas.width - radius * 2) + radius;
@@ -400,14 +440,15 @@ const animate = () => {
     requestAnimationFrame(animate);
     context.clearRect(0, 0, innerWidth, innerHeight);
 
+    drawGrid();
     for (let i = 0; i < particles.length; i++) {
       particles[i].update(particles);
     }
-    drawGrid();
 
     for (let i = 0; i < lines.length; i++) {
       lines[i].update();
     }
+
 
 
   };
