@@ -16,6 +16,8 @@ let gridHeight = 30;
 let gridColCount = 40;
 let gridRowCount = 25;
 
+let lineId = 0;
+
 canvas.height = gridHeight * gridRowCount;
 canvas.width = gridHeight * gridColCount;
 
@@ -66,18 +68,20 @@ const drawLines = () => {
       box = grid[c][r];
       if (mouse.direction === 'vertical') {
         if (mouse.x > box.gridX && mouse.x < box.gridHeight + box.gridX && mouse.y > box.gridY && mouse.y < box.gridY + box.gridHeight ) {
-          const line1 = new Line(box.gridX, box.gridY, mouse.direction, box.gridHeight, "bottom");
+          const line1 = new Line(box.gridX, box.gridY, mouse.direction, box.gridHeight, "bottom", lineId, "moving");
           lines.push(line1);
-          const line2 = new Line(box.gridX, box.gridY, mouse.direction, box.gridHeight, "top");
+          const line2 = new Line(box.gridX, box.gridY, mouse.direction, box.gridHeight, "top", lineId, "moving");
           lines.push(line2);
+          lineId += 1;
 
         }
       } else if (mouse.direction === 'horizontal') {
           if (mouse.x > box.gridX && mouse.x < box.gridHeight + box.gridX && mouse.y > box.gridY && mouse.y < box.gridY + box.gridHeight) {
-            const line1 = new Line(box.gridX, box.gridY, mouse.direction, box.gridHeight, "right");
+            const line1 = new Line(box.gridX, box.gridY, mouse.direction, box.gridHeight, "right", lineId, "moving");
             lines.push(line1);
-            const line2 = new Line(box.gridX, box.gridY, mouse.direction, box.gridHeight, "left");
+            const line2 = new Line(box.gridX, box.gridY, mouse.direction, box.gridHeight, "left", lineId, "moving");
             lines.push(line2);
+            lineId += 1;
           }
         }
       }
@@ -162,7 +166,7 @@ const drawGrid = () => {
 };
 
 class Line {
-  constructor(lineX, lineY, direction, gridHeight, side) {
+  constructor(lineX, lineY, direction, gridHeight, side, lineId, status) {
     this.direction = direction;
     this.lineX = lineX;
     this.lineY = lineY;
@@ -172,41 +176,96 @@ class Line {
     this.dW = 5;
     this.dH = 5;
     this.side = side;
+    this.blue = 'rgb(0,0,255, 0.8)';
+    this.red = 'rgb(255,0,0, 0.8)';
+    this.black = 'black';
+    this.lineId = lineId;
+    this.status = status;
   }
 
-  draw() {
-    context.beginPath();
-    context.fillStyle = 'red';
-    context.fillRect(this.lineX, this.lineY, this.width, this.height);
+  // getXLineDistance(lineOneX, lineTwoX) {
+  //   let xDistance = lineOneX - lineTwoX;
+  //   debugger
+  //   return xDistance;
+  // }
+  //
+  // getYLineDistance(lineOneY, lineTwoY) {
+  //   let yDistance = lineOneY - lineTwoY;
+  //   return yDistance;
+  // }
+  //
+  // checkLineCollision() {
+  //   for (let i = 0; i < lines.length; i++) {
+  //     if (this.lineId === lines[i].lineId) {
+  //       debugger
+  //       continue;
+  //     }
+  //     if (this.getXLineDistance(this.lineX, lines[i].lineX) === 0) {
+  //       console.log('touching');
+  //     }
+  //   }
+  // }
+
+  checkWallCollision() {
+    if (this.side === "right") {
+      if (this.lineX + this.width === canvas.width) {
+        this.status = "stopped";
+      }
+    } else if (this.side === "left") {
+        if (this.lineX + this.width < 0) {
+          this.status = "stopped";
+        }
+    } else if (this.side === "top") {
+        if (this.lineY + this.height < 0) {
+          this.status = "stopped";
+        }
+    }
+      else if (this.side === "bottom") {
+        if (this.lineY + this.height === canvas.height) {
+          this.status = "stopped";
+        }
+      }
   }
 
   update(){
+    this.checkWallCollision();
     if (this.direction === 'horizontal') {
-      if (this.side === 'right') {
+      if (this.side === 'right' && this.status === "moving") {
           context.beginPath();
-          context.fillStyle = 'red';
+          context.fillStyle = this.red;
           context.fillRect(this.lineX, this.lineY, this.width, this.height);
           this.width += this.dW;
-      } else if (this.side === 'left') {
+          // this.checkWallCollision();
+      } else if (this.side === 'left' && this.status === "moving") {
           context.beginPath();
-          context.fillStyle = 'blue';
+          context.fillStyle = this.blue;
           context.fillRect(this.lineX, this.lineY, this.width, this.height);
           this.width -= this.dW;
+          // this.checkWallCollision();
+      } else if (this.status === "stopped") {
+        context.beginPath();
+        context.fillStyle = this.black;
+        context.fillRect(this.lineX, this.lineY, this.width, this.height);
       }
     } else if (this.direction === 'vertical') {
-      if (this.side === 'bottom') {
+      if (this.side === 'bottom' && this.status === "moving") {
         context.beginPath();
-        context.fillStyle = 'red';
+        context.fillStyle = this.red;
         context.fillRect(this.lineX, this.lineY, this.width, this.height);
         this.height += this.dH;
-      } else if (this.side === 'top') {
+      } else if (this.side === 'top' && this.status === "moving") {
         context.beginPath();
-        context.fillStyle = 'blue';
+        context.fillStyle = this.blue;
         context.fillRect(this.lineX, this.lineY, this.width, this.height);
         this.height -= this.dH;
+      } else if (this.status === "stopped") {
+        context.beginPath();
+        context.fillStyle = this.black;
+        context.fillRect(this.lineX, this.lineY, this.width, this.height);
       }
     }
   }
+
 }
 
 const resolveCollision = (particle1, particle2) => {
