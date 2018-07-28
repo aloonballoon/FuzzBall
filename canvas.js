@@ -198,8 +198,6 @@ class Line {
     yTouching = this.lineY + this.height === otherLine.lineY;
     xTouching = ((this.lineX > otherLine.lineX) && (this.lineX < (otherLine.lineX + otherLine.width))) || ((this.lineX < otherLine.lineX) && (this.lineX > (otherLine.lineX + otherLine.width))) || this.lineX === otherLine.lineX;
 
-    if (xTouching) {
-    }
     if (xTouching && yTouching) {
       return true;
     }
@@ -212,8 +210,6 @@ class Line {
     yTouching = this.lineY + this.height === otherLine.lineY + otherLine.gridHeight;
     xTouching = ((this.lineX > otherLine.lineX) && (this.lineX < (otherLine.lineX + otherLine.width))) || ((this.lineX < otherLine.lineX) && (this.lineX > (otherLine.lineX + otherLine.width))) || this.lineX === otherLine.lineX;
 
-    if (xTouching) {
-    }
     if (xTouching && yTouching) {
       return true;
     }
@@ -226,8 +222,6 @@ class Line {
     xTouching = this.lineX + this.width === otherLine.lineX;
     yTouching = ((this.lineY > otherLine.lineY) && (this.lineY < (otherLine.lineY + otherLine.height))) || ((this.lineY < otherLine.lineY) && (this.lineY > (otherLine.lineY + otherLine.height))) || this.lineY === otherLine.lineY;
 
-    if (xTouching) {
-    }
     if (xTouching && yTouching) {
       return true;
     }
@@ -240,8 +234,6 @@ class Line {
     xTouching = this.lineX + this.width - this.gridHeight === otherLine.lineX;
     yTouching = ((this.lineY > otherLine.lineY) && (this.lineY < (otherLine.lineY + otherLine.height))) || ((this.lineY < otherLine.lineY) && (this.lineY > (otherLine.lineY + otherLine.height))) || this.lineY === otherLine.lineY;
 
-    if (xTouching) {
-    }
     if (xTouching && yTouching) {
       return true;
     }
@@ -405,6 +397,30 @@ class Circle {
     context.fill();
     context.stroke();
   }
+  //
+  // if(b.status == 1) {
+  //               if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
+  //                   dy = -dy;
+  //                   b.status = 0;
+  //               }
+  //           }
+
+  leftCircleToLineDistance() {
+
+    let line;
+
+    for (let i = 0; i < lines.length; i++) {
+      line = lines[i];
+
+      if (line.direction === "vertical") {
+        if (this.x + this.radius > line.lineX && this.x - this.radius < line.lineX + line.width && this.y + this.radius > line.lineY && this.y + this.radius < line.lineY + line.height) {
+          this.velocity.x = -this.velocity.x;
+        } else if (this.x + this.radius > line.lineX && this.x - this.radius < line.lineX + line.width && this.y + this.radius < line.lineY && this.y + this.radius > line.lineY + line.height) {
+          this.velocity.x = -this.velocity.x;
+        }
+      }
+    }
+  }
 
   update(particles) {
 
@@ -415,6 +431,9 @@ class Circle {
       if (getDistance(this.x, this.y, particles[j].x, particles[j].y) - particles[j].radius * 2 < 0) {
           resolveCollision(this, particles[j]);
       }
+    }
+    if (lines.length !== 0) {
+      this.leftCircleToLineDistance();
     }
 
     if (this.x + this.radius > canvas.width || this.x - this.radius < 0) {
@@ -436,7 +455,7 @@ class Circle {
 const init = () => {
   particles = [];
 
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 1; i++) {
     let color = getRandomColor();
     let radius = 10;
     let x = Math.random() * (canvas.width - radius * 2) + radius;
@@ -473,6 +492,7 @@ const animate = () => {
     context.clearRect(0, 0, innerWidth, innerHeight);
 
     drawGrid();
+
     for (let i = 0; i < particles.length; i++) {
       particles[i].update(particles);
     }
