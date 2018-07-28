@@ -418,6 +418,12 @@ class Circle {
         } else if (this.x + this.radius > line.lineX && this.x - this.radius < line.lineX + line.width && this.y + this.radius < line.lineY && this.y + this.radius > line.lineY + line.height) {
           this.velocity.x = -this.velocity.x;
         }
+      } else if (line.direction === "horizontal") {
+          if (this.y + this.radius > line.lineY && this.y - this.radius < line.lineY + line.height && this.x + this.radius > line.lineX && this.x + this.radius < line.lineX + line.width) {
+            this.velocity.y = -this.velocity.y;
+          } else if (this.y + this.radius > line.lineY && this.y - this.radius < line.lineY + line.height && this.x + this.radius < line.lineX && this.x + this.radius > line.lineX + line.width) {
+            this.velocity.y = -this.velocity.y;
+          }
       }
     }
   }
