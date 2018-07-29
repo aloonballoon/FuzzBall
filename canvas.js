@@ -56,7 +56,7 @@ const drawLines = () => {
     for (let r = 0; r < gridRowCount; r++) {
       box = grid[c][r];
       if (mouse.direction === 'vertical') {
-        if (mouse.x > box.gridX && mouse.x < box.gridHeight + box.gridX && mouse.y > box.gridY && mouse.y < box.gridY + box.gridHeight ) {
+        if (mouse.x > box.gridX && mouse.x < box.gridHeight + box.gridX && mouse.y > box.gridY && mouse.y < box.gridY + box.gridHeight) {
           const line1 = new Line(box.gridX, box.gridY, mouse.direction, box.gridHeight, "bottom", pairId, "moving", lineId);
           lines.push(line1);
           lineId += 1;
@@ -142,6 +142,7 @@ class Grid {
     context.stroke();
     context.closePath();
   }
+
 }
 
 for (let c = 0; c < gridColCount; c++) {
@@ -185,7 +186,7 @@ class Line {
     this.side = side;
     this.blue = 'rgb(0,0,255, 0.8)';
     this.red = 'rgb(255,0,0, 0.8)';
-    this.black = 'black';
+    this.black = 'rgb(0, 255, 0, 0.8)';
     this.pairId = pairId;
     this.status = status;
     this.lineId = lineId;
@@ -197,14 +198,6 @@ class Line {
 
     yTouching = this.lineY + this.height === otherLine.lineY;
     xTouching = ((this.lineX > otherLine.lineX) && (this.lineX < (otherLine.lineX + otherLine.width))) || ((this.lineX < otherLine.lineX) && (this.lineX >= (otherLine.lineX + otherLine.width))) || this.lineX === otherLine.lineX;
-
-    if (yTouching) {
-      debugger
-    }
-
-    if (xTouching) {
-      debugger
-    }
 
     if (xTouching && yTouching) {
       return true;
@@ -228,7 +221,7 @@ class Line {
     let yTouching;
 
     xTouching = this.lineX + this.width === otherLine.lineX;
-    yTouching = ((this.lineY > otherLine.lineY) && (this.lineY < (otherLine.lineY + otherLine.height))) || ((this.lineY < otherLine.lineY) && (this.lineY > (otherLine.lineY + otherLine.height))) || this.lineY === otherLine.lineY;
+    yTouching = ((this.lineY > otherLine.lineY) && (this.lineY < (otherLine.lineY + otherLine.height))) || ((this.lineY < otherLine.lineY) && (this.lineY >= (otherLine.lineY + otherLine.height))) || this.lineY === otherLine.lineY;
 
     if (xTouching && yTouching) {
       return true;
@@ -239,8 +232,8 @@ class Line {
     let xTouching;
     let yTouching;
 
-    xTouching = this.lineX + this.width - this.gridHeight === otherLine.lineX;
-    yTouching = ((this.lineY > otherLine.lineY) && (this.lineY < (otherLine.lineY + otherLine.height))) || ((this.lineY < otherLine.lineY) && (this.lineY > (otherLine.lineY + otherLine.height))) || this.lineY === otherLine.lineY;
+    xTouching = this.lineX + this.width === otherLine.lineX;
+    yTouching = ((this.lineY > otherLine.lineY) && (this.lineY < (otherLine.lineY + otherLine.height))) || ((this.lineY < otherLine.lineY) && (this.lineY >= (otherLine.lineY + otherLine.height))) || this.lineY === otherLine.lineY;
 
     if (xTouching && yTouching) {
       return true;
@@ -294,9 +287,33 @@ class Line {
       }
   }
 
+  updateGrid() {
+    if (this.status === "stopped") {
+      let line = this;
+      let box;
+
+      for (let c = 0; c < gridColCount; c++) {
+        for (let r = 0; r < gridRowCount; r++) {
+          box = grid[c][r];
+          if (box.gridX === line.lineX && box.gridY < line.lineY && box.gridY >= line.lineY + line.height) {
+            box.gridStatus = 1;
+          } else if (box.gridX === line.lineX && box.gridY > line.lineY && box.gridY < line.lineY + line.height) {
+            box.gridStatus = 1;
+          } else if (box.gridY === line.lineY && box.gridX < line.lineX && box.gridX > line.lineX + line.width) {
+            box.gridStatus = 1;
+          } else if (box.gridY === line.lineY && box.gridX > line.lineX && box.gridX < line.lineX + line.width) {
+            box.gridStatus = 1;
+          }
+        }
+      }
+    }
+  }
+
+
   update(){
     this.checkWallCollision();
     this.checkLineCollision();
+    this.updateGrid();
     if (this.direction === 'horizontal') {
 
       if (this.side === 'right' && this.status === "moving") {
@@ -412,9 +429,6 @@ class Circle {
     let line;
 
     for (let i = 0; i < lines.length; i++) {
-      if (lines[i] === null) {
-        continue;
-      }
       line = lines[i];
 
 
