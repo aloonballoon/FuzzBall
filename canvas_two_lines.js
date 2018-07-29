@@ -197,6 +197,9 @@ class Line {
     this.lineId = lineId;
   }
 
+  checkIfSquare() {
+
+  }
 
   bottomLineToLineDistance(otherLine) {
     let xTouching;
@@ -294,24 +297,21 @@ class Line {
   }
 
   updateGrid() {
-    for (let i = 0; i < lines.length; i++) {
+    if (this.status === "stopped") {
+      let line = this;
+      let box;
 
-      if (this.status === "stopped" && lines[i].pairId === this.pairId && lines[i].status === "stopped" && lines[i].lineId !== this.lineId) {
-        let line = this;
-        let box;
-
-        for (let c = 0; c < gridColCount; c++) {
-          for (let r = 0; r < gridRowCount; r++) {
-            box = grid[c][r];
-            if (box.gridX === line.lineX && box.gridY < line.lineY && box.gridY >= line.lineY + line.height) {
-              box.gridStatus = 1;
-            } else if (box.gridX === line.lineX && box.gridY > line.lineY && box.gridY < line.lineY + line.height) {
-              box.gridStatus = 1;
-            } else if (box.gridY === line.lineY && box.gridX < line.lineX && box.gridX > line.lineX + line.width) {
-              box.gridStatus = 1;
-            } else if (box.gridY === line.lineY && box.gridX > line.lineX && box.gridX < line.lineX + line.width) {
-              box.gridStatus = 1;
-            }
+      for (let c = 0; c < gridColCount; c++) {
+        for (let r = 0; r < gridRowCount; r++) {
+          box = grid[c][r];
+          if (box.gridX === line.lineX && box.gridY < line.lineY && box.gridY >= line.lineY + line.height) {
+            box.gridStatus = 1;
+          } else if (box.gridX === line.lineX && box.gridY > line.lineY && box.gridY < line.lineY + line.height) {
+            box.gridStatus = 1;
+          } else if (box.gridY === line.lineY && box.gridX < line.lineX && box.gridX > line.lineX + line.width) {
+            box.gridStatus = 1;
+          } else if (box.gridY === line.lineY && box.gridX > line.lineX && box.gridX < line.lineX + line.width) {
+            box.gridStatus = 1;
           }
         }
       }
@@ -438,36 +438,25 @@ class Circle {
     let line;
 
     for (let i = 0; i < lines.length; i++) {
-      if (lines.length === 0) {
-        break;
-      }
       line = lines[i];
+
+
       if (line.direction === "vertical") {
         if (this.x + this.radius > line.lineX && this.x - this.radius < line.lineX + line.width && this.y + this.radius > line.lineY && this.y + this.radius < line.lineY + line.height) {
           if (line.status === "stopped") {
             this.velocity.x = -this.velocity.x;
           } else if (line.status === "moving") {
-            for (let j = 0; j < lines.length; j++) {
-              if (lines[j].pairId === lines[i].pairId && lines[j].lineId !== lines[i].lineId) {
-                delete lines[i];
-                delete lines[j];
-                lines = lines.filter(Boolean);
-              }
-            }
-            i = 0;
+            delete lines[i];
+            lines = lines.filter(Boolean);
+            i = i - 1;
           }
         } else if (this.x + this.radius > line.lineX && this.x - this.radius < line.lineX + line.width && this.y + this.radius < line.lineY && this.y + this.radius > line.lineY + line.height) {
           if (line.status === "stopped") {
             this.velocity.x = -this.velocity.x;
           }  else if (line.status === "moving") {
-            for (let j = 0; j < lines.length; j++) {
-              if (lines[j].pairId === lines[i].pairId && lines[j].lineId !== lines[i].lineId) {
-                delete lines[i];
-                delete lines[j];
-                lines = lines.filter(Boolean);
-              }
-            }
-            i = 0;
+            delete lines[i];
+            lines = lines.filter(Boolean);
+            i = i - 1;
           }
         }
       } else if (line.direction === "horizontal") {
@@ -475,27 +464,18 @@ class Circle {
             if (line.status === "stopped") {
               this.velocity.y = -this.velocity.y;
             }  else if (line.status === "moving") {
-              for (let j = 0; j < lines.length; j++) {
-                if (lines[j].pairId === lines[i].pairId && lines[j].lineId !== lines[i].lineId) {
-                  delete lines[i];
-                  delete lines[j];
-                  lines = lines.filter(Boolean);
-                }
-              }
-              i = 0;
+              delete lines[i];
+              delete lines[i];
+              lines = lines.filter(Boolean);
+              i = i - 1;
             }
           } else if (this.y + this.radius > line.lineY && this.y - this.radius < line.lineY + line.height && this.x + this.radius < line.lineX && this.x + this.radius > line.lineX + line.width) {
             if (line.status === "stopped") {
               this.velocity.y = -this.velocity.y;
             }  else if (line.status === "moving") {
-              for (let j = 0; j < lines.length; j++) {
-                if (lines[j].pairId === lines[i].pairId && lines[j].lineId !== lines[i].lineId) {
-                  delete lines[i];
-                  delete lines[j];
-                  lines = lines.filter(Boolean);
-                }
-              }
-              i = 0;
+              delete lines[i];
+              lines = lines.filter(Boolean);
+              i = i - 1;
             }
           }
       }
