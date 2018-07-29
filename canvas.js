@@ -196,7 +196,15 @@ class Line {
     let yTouching;
 
     yTouching = this.lineY + this.height === otherLine.lineY;
-    xTouching = ((this.lineX > otherLine.lineX) && (this.lineX < (otherLine.lineX + otherLine.width))) || ((this.lineX < otherLine.lineX) && (this.lineX > (otherLine.lineX + otherLine.width))) || this.lineX === otherLine.lineX;
+    xTouching = ((this.lineX > otherLine.lineX) && (this.lineX < (otherLine.lineX + otherLine.width))) || ((this.lineX < otherLine.lineX) && (this.lineX >= (otherLine.lineX + otherLine.width))) || this.lineX === otherLine.lineX;
+
+    if (yTouching) {
+      debugger
+    }
+
+    if (xTouching) {
+      debugger
+    }
 
     if (xTouching && yTouching) {
       return true;
@@ -208,7 +216,7 @@ class Line {
     let yTouching;
 
     yTouching = this.lineY + this.height === otherLine.lineY + otherLine.gridHeight;
-    xTouching = ((this.lineX > otherLine.lineX) && (this.lineX < (otherLine.lineX + otherLine.width))) || ((this.lineX < otherLine.lineX) && (this.lineX > (otherLine.lineX + otherLine.width))) || this.lineX === otherLine.lineX;
+    xTouching = ((this.lineX > otherLine.lineX) && (this.lineX < (otherLine.lineX + otherLine.width))) || ((this.lineX < otherLine.lineX) && (this.lineX >= (otherLine.lineX + otherLine.width))) || this.lineX === otherLine.lineX;
 
     if (xTouching && yTouching) {
       return true;
