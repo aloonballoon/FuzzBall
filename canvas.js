@@ -397,32 +397,55 @@ class Circle {
     context.fill();
     context.stroke();
   }
-  //
-  // if(b.status == 1) {
-  //               if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
-  //                   dy = -dy;
-  //                   b.status = 0;
-  //               }
-  //           }
 
-  leftCircleToLineDistance() {
+
+  circleToLineCollision() {
 
     let line;
 
     for (let i = 0; i < lines.length; i++) {
+      if (lines[i] === null) {
+        continue;
+      }
       line = lines[i];
+
 
       if (line.direction === "vertical") {
         if (this.x + this.radius > line.lineX && this.x - this.radius < line.lineX + line.width && this.y + this.radius > line.lineY && this.y + this.radius < line.lineY + line.height) {
-          this.velocity.x = -this.velocity.x;
+          if (line.status === "stopped") {
+            this.velocity.x = -this.velocity.x;
+          } else if (line.status === "moving") {
+            delete lines[i];
+            lines = lines.filter(Boolean);
+            i = i - 1;
+          }
         } else if (this.x + this.radius > line.lineX && this.x - this.radius < line.lineX + line.width && this.y + this.radius < line.lineY && this.y + this.radius > line.lineY + line.height) {
-          this.velocity.x = -this.velocity.x;
+          if (line.status === "stopped") {
+            this.velocity.x = -this.velocity.x;
+          }  else if (line.status === "moving") {
+            delete lines[i];
+            lines = lines.filter(Boolean);
+            i = i - 1;
+          }
         }
       } else if (line.direction === "horizontal") {
           if (this.y + this.radius > line.lineY && this.y - this.radius < line.lineY + line.height && this.x + this.radius > line.lineX && this.x + this.radius < line.lineX + line.width) {
-            this.velocity.y = -this.velocity.y;
+            if (line.status === "stopped") {
+              this.velocity.y = -this.velocity.y;
+            }  else if (line.status === "moving") {
+              delete lines[i];
+              delete lines[i];
+              lines = lines.filter(Boolean);
+              i = i - 1;
+            }
           } else if (this.y + this.radius > line.lineY && this.y - this.radius < line.lineY + line.height && this.x + this.radius < line.lineX && this.x + this.radius > line.lineX + line.width) {
-            this.velocity.y = -this.velocity.y;
+            if (line.status === "stopped") {
+              this.velocity.y = -this.velocity.y;
+            }  else if (line.status === "moving") {
+              delete lines[i];
+              lines = lines.filter(Boolean);
+              i = i - 1;
+            }
           }
       }
     }
@@ -438,8 +461,9 @@ class Circle {
           resolveCollision(this, particles[j]);
       }
     }
+
     if (lines.length !== 0) {
-      this.leftCircleToLineDistance();
+      this.circleToLineCollision();
     }
 
     if (this.x + this.radius > canvas.width || this.x - this.radius < 0) {
