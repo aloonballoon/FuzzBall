@@ -123,10 +123,11 @@ class Grid {
     this.gridY = gridY;
     this.gridId = gridId;
     this.gridStatus = gridStatus;
-    this.mass = null;
-    this.velocity = {
-      x: null,
-      y: null
+    this.neighbor = {
+      top: null,
+      bottom: null,
+      right: null,
+      left: null
     };
   }
 
@@ -148,42 +149,13 @@ class Grid {
     context.closePath();
   }
 
-  // fillInCheck() {
-  //   let line;
-  //   let circle;
-  //   let range;
-  //   for (let i = 0; i < lines.length; i++) {
-  //     if (lines[i].complete === "complete") {
-  //       line = lines[i];
-  //       range = line.lineX;
-  //       if (line.direction === "vertical" && this.gridX < range) {
-  //         //left
-  //         for (let i = 0; i < particles.length; i++) {
-  //           circle = particles[i];
-  //           if ( circle.x < range) {
-  //             return false;
-  //           }
-  //           else {
-  //             this.gridStatus = 1;
-  //           }
-  //         }
-  //       } else if (line.direction === "vertical" && this.gridX > range) {
-  //         range = canvas.width - line.lineX;
-  //         for (let i = 0; i < particles.length; i++) {
-  //           circle = particles[i];
-  //           if ( circle.x > range) {
-  //             return false;
-  //           }
-  //           else {
-  //             this.gridStatus = 1;
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
-
-
+  drawRed() {
+    context.beginPath();
+    context.rect(this.gridX, this.gridY, this.gridHeight, this.gridHeight);
+    context.fillStyle = "red";
+    context.fill();
+    context.closePath();
+  }
 }
 
 for (let c = 0; c < gridColCount; c++) {
@@ -200,6 +172,9 @@ const drawGrid = () => {
 
         let gridX = (c * gridHeight);
         let gridY = (r * gridHeight);
+        if (c !== 0) {
+          grid[c][r].neighbor.left = null;
+        }
 
         grid[c][r].gridHeight = gridHeight;
         grid[c][r].gridX = gridX;
@@ -210,7 +185,7 @@ const drawGrid = () => {
       } else if (grid[c][r].gridStatus === 1) {
         grid[c][r].drawFull();
       }
-      // grid[c][r].fillInCheck()
+      grid[29][0].drawRed();
     }
   }
 };
