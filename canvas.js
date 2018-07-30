@@ -148,6 +148,42 @@ class Grid {
     context.closePath();
   }
 
+  // fillInCheck() {
+  //   let line;
+  //   let circle;
+  //   let range;
+  //   for (let i = 0; i < lines.length; i++) {
+  //     if (lines[i].complete === "complete") {
+  //       line = lines[i];
+  //       range = line.lineX;
+  //       if (line.direction === "vertical" && this.gridX < range) {
+  //         //left
+  //         for (let i = 0; i < particles.length; i++) {
+  //           circle = particles[i];
+  //           if ( circle.x < range) {
+  //             return false;
+  //           }
+  //           else {
+  //             this.gridStatus = 1;
+  //           }
+  //         }
+  //       } else if (line.direction === "vertical" && this.gridX > range) {
+  //         range = canvas.width - line.lineX;
+  //         for (let i = 0; i < particles.length; i++) {
+  //           circle = particles[i];
+  //           if ( circle.x > range) {
+  //             return false;
+  //           }
+  //           else {
+  //             this.gridStatus = 1;
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
+
+
 }
 
 for (let c = 0; c < gridColCount; c++) {
@@ -174,6 +210,7 @@ const drawGrid = () => {
       } else if (grid[c][r].gridStatus === 1) {
         grid[c][r].drawFull();
       }
+      // grid[c][r].fillInCheck()
     }
   }
 };
@@ -195,6 +232,7 @@ class Line {
     this.pairId = pairId;
     this.status = status;
     this.lineId = lineId;
+    this.complete = null;
   }
 
 
@@ -305,12 +343,16 @@ class Line {
             box = grid[c][r];
             if (box.gridX === line.lineX && box.gridY < line.lineY && box.gridY >= line.lineY + line.height) {
               box.gridStatus = 1;
+              line.complete = "complete";
             } else if (box.gridX === line.lineX && box.gridY > line.lineY && box.gridY < line.lineY + line.height) {
               box.gridStatus = 1;
+              line.complete = "complete";
             } else if (box.gridY === line.lineY && box.gridX < line.lineX && box.gridX > line.lineX + line.width) {
               box.gridStatus = 1;
+              line.complete = "complete";
             } else if (box.gridY === line.lineY && box.gridX > line.lineX && box.gridX < line.lineX + line.width) {
               box.gridStatus = 1;
+              line.complete = "complete";
             }
           }
         }
@@ -536,7 +578,7 @@ class Circle {
 const init = () => {
   particles = [];
 
-  for (let i = 0; i < 1; i++) {
+  for (let i = 0; i < 2; i++) {
     let color = getRandomColor();
     let radius = 10;
     let x = Math.random() * (canvas.width - radius * 2) + radius;

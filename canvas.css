@@ -2,8 +2,25 @@ html, body {
   height: 100%;
 }
 
+html {
+  background-image: url(images/neon_pink_blue.jpg);
+}
+
+@font-face {
+  font-family: "alien";
+  src: url(fonts/SFAlienEncounters.ttf);
+  font-style: normal;
+  font-weight: 100;
+}
+
+article {
+  width: 30%;
+  display: flex;
+  justify-content: space-between;
+}
+
 canvas {
-  background-color: white;
+  background-color: rgb(169,169,169, 0.5);
   border: 1px solid black;
 }
 
@@ -16,7 +33,13 @@ canvas {
 }
 
 .canvas-h1 {
+  color: white;
+  font-family: alien;
   margin-bottom: 30px;
   font-size: 40px;
   font-weight: bolder;
+}
+
+a {
+  color: lightblue;
 }
