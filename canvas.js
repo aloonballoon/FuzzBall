@@ -129,6 +129,8 @@ class Grid {
       right: null,
       left: null
     };
+    this.visited = false;
+    this.ballPresent = undefined;
   }
 
   drawEmpty() {
@@ -142,8 +144,8 @@ class Grid {
   drawFull() {
     context.beginPath();
     context.rect(this.gridX, this.gridY, this.gridHeight, this.gridHeight);
-    context.strokeStyle = "black";
-    context.fillStyle = "black";
+    context.strokeStyle = "red";
+    context.fillStyle = "red";
     context.fill();
     context.stroke();
     context.closePath();
@@ -155,6 +157,19 @@ class Grid {
     context.fillStyle = "red";
     context.fill();
     context.closePath();
+  }
+
+  ballCheck() {
+    let ball;
+    for (let i = 0; i < particles.length; i++) {
+      ball = particles[i];
+      if (ball.x + ball.radius > this.gridX && ball.x + ball.radius < this.gridX + gridHeight && ball.y + ball.radius > this.gridY && ball.y + ball.radius < this.gridY + gridHeight) {
+          this.ballPresent = true;
+      }
+      else {
+        this.ballPresent = false;
+      }
+    }
   }
 }
 
@@ -169,23 +184,34 @@ for (let c = 0; c < gridColCount; c++) {
 const drawGrid = () => {
   for (let c = 0; c < gridColCount; c++) {
     for (let r = 0; r < gridRowCount; r++) {
-
+        let box = grid[c][r];
         let gridX = (c * gridHeight);
         let gridY = (r * gridHeight);
-        if (c !== 0) {
-          grid[c][r].neighbor.left = null;
+
+        box.gridHeight = gridHeight;
+        box.gridX = gridX;
+        box.gridY = gridY;
+
+        // handle "edge" cases for checking properties of undefined
+        if (typeof grid[c + 1] === "undefined") {
+          grid[c + 1] = {};
+        } else if (typeof grid[c - 1] === "undefined") {
+          grid[c - 1] = {};
         }
 
-        grid[c][r].gridHeight = gridHeight;
-        grid[c][r].gridX = gridX;
-        grid[c][r].gridY = gridY;
+        box.neighbor.right = grid[c + 1][r];
+        box.neighbor.left = grid[c - 1][r];
+        box.neighbor.bottom = grid[c][r + 1];
+        box.neighbor.top = grid[c][r - 1];
 
-      if (grid[c][r].gridStatus === 0) {
-        grid[c][r].drawEmpty();
-      } else if (grid[c][r].gridStatus === 1) {
-        grid[c][r].drawFull();
-      }
-      grid[29][0].drawRed();
+        box.ballCheck();
+
+        if (box.gridStatus === 0) {
+          box.drawEmpty();
+        } else if (grid[c][r].gridStatus === 1) {
+          box.drawFull();
+        }
+
     }
   }
 };
@@ -203,11 +229,12 @@ class Line {
     this.side = side;
     this.blue = 'rgb(0,0,255, 0.8)';
     this.red = 'rgb(255,0,0, 0.8)';
-    this.black = 'rgb(0, 255, 0, 0.8)';
+    this.black = 'rgb(0, 0, 0, 0.8)';
     this.pairId = pairId;
     this.status = status;
     this.lineId = lineId;
     this.complete = null;
+    this.justCompleted = [];
   }
 
 
@@ -313,9 +340,16 @@ class Line {
         let line = this;
         let box;
 
+        this.justCompleted.push(this);
+        this.justCompleted.push(lines[i]);
+
         for (let c = 0; c < gridColCount; c++) {
           for (let r = 0; r < gridRowCount; r++) {
             box = grid[c][r];
+            //bottom
+            if (box.gridX === line.lineX && box.gridY === line.lineY) {
+              box.gridStatus = 1;
+            }
             if (box.gridX === line.lineX && box.gridY < line.lineY && box.gridY >= line.lineY + line.height) {
               box.gridStatus = 1;
               line.complete = "complete";
@@ -335,11 +369,26 @@ class Line {
     }
   }
 
+  blackOut() {
+
+  }
+
+  callBlackOut() {
+    if (this.justCompleted.length === 2) {
+      this.blackOut();
+    }
+    this.justCompleted = [];
+  }
+
 
   update(){
     this.checkWallCollision();
     this.checkLineCollision();
     this.updateGrid();
+    this.grow();
+  }
+
+  grow() {
     if (this.direction === 'horizontal') {
 
       if (this.side === 'right' && this.status === "moving") {
@@ -380,6 +429,8 @@ class Line {
       }
     }
   }
+
+
 
 }
 
