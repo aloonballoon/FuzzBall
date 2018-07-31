@@ -13,7 +13,7 @@ html {
   font-weight: 100;
 }
 
-article {
+.links-footer {
   width: 30%;
   display: flex;
   justify-content: space-between;
@@ -22,6 +22,30 @@ article {
 canvas {
   background-color: rgb(169,169,169, 0.5);
   border: 1px solid black;
+}
+
+.canvas-direction-article {
+ width: 100%;
+ display: flex;
+ justify-content: center;
+}
+
+.directions-aside {
+  color: purple;
+  width: 300px;
+  height: auto;
+  background-color: rgb(0,0,0, 0.5);
+  margin-right: 150px;
+  border: white 1px solid;
+}
+
+.names-aside {
+  color: purple;
+  width: 300px;
+  height: auto;
+  background-color: rgb(0,0,0, 0.5);
+  margin-left: 150px;
+  border: white 1px solid;
 }
 
 .canvas-section {

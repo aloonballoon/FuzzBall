@@ -8,8 +8,7 @@ const mouse = {
   direction: 'vertical'
 };
 
-let circle1;
-let circle2;
+
 let particles;
 
 let gridHeight = 30;
@@ -24,6 +23,7 @@ canvas.width = gridHeight * gridColCount;
 
 let gridId = 0;
 let grid = [];
+
 
 canvas.addEventListener('mousemove', (event) => {
   let x = event.x;
@@ -714,6 +714,7 @@ const init = () => {
   }
 };
 
+
 const getDistance = (x1,y1, x2, y2) => {
   let xDistance = x2 - x1;
   let yDistance = y2 - y1;
@@ -721,16 +722,29 @@ const getDistance = (x1,y1, x2, y2) => {
   return Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
 };
 
+const welcomeWindow = () => {
+  context.beginPath();
+  context.fillStyle = "black";
+  context.fillRect(0, 0, canvas.width, canvas.height);
+
+};
+
 canvas.addEventListener('click', handleClick);
 
+window.addEventListener('keydown', (event) => {
+  if (event.key === "Enter") {
+    init();
+    animate();
+  }
+});
+
+welcomeWindow();
 
 const animate = () => {
     requestAnimationFrame(animate);
     context.clearRect(0, 0, innerWidth, innerHeight);
 
     drawGrid();
-
-
 
     for (let i = 0; i < particles.length; i++) {
       particles[i].update(particles);
@@ -739,10 +753,4 @@ const animate = () => {
     for (let i = 0; i < lines.length; i++) {
       lines[i].update();
     }
-
-
-
   };
-
-  init();
-  animate();
