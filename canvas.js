@@ -13,8 +13,8 @@ let circle2;
 let particles;
 
 let gridHeight = 30;
-let gridColCount = 10;
-let gridRowCount = 10;
+let gridColCount = 30;
+let gridRowCount = 20;
 
 let lineId = 0;
 let pairId = 0;
@@ -133,13 +133,19 @@ const circleBlackOut = () => {
   for (let i = 0; i < particles.length; i++) {
     gridArrForBlackOut.push(particles[i].getGridLocation());
     box = gridArrForBlackOut[i];
-    if (!box.bfs()) {
-      debugger
-      for (let i = 0; i < box.visitedArr.length; i++) {
-        box.visitedArr[i].gridStatus = 1;
+    box.bfs();
+  }
+  for (let c = 0; c < gridColCount; c++) {
+    for (let r = 0; r < gridRowCount; r++) {
+      if (grid[c][r].gridStatus === 0) {
+        grid[c][r].gridStatus = 1;
+      } else if (grid[c][r].gridStatus === 2) {
+        grid[c][r].gridStatus = 0;
+        grid[c][r].visited = false;
       }
     }
   }
+
 };
 
 
@@ -158,7 +164,7 @@ class Grid {
     };
     this.visited = false;
     this.ballPresent = undefined;
-    this.visitedArr = [];
+    // this.visitedArr = [];
   }
 
   drawEmpty() {
@@ -188,53 +194,29 @@ class Grid {
   }
 
   bfs() {
+
     let currentGrid = this;
     let neighbors = [];
-    let new_neighbors = [];
     let queue = [];
-    if (currentGrid.gridStatus === 1) {
-      return true;
-    }
+
     //is this === currentGrid? actually changing "this"?
-    if (currentGrid.ballPresent) {
-      return true;
-    }
-    this.visited = true;
-    this.visitedArr.push(this);
 
-    neighbors = Object.values(currentGrid.neighbors).filter(Boolean);
-
-    for (let i = 0; i < neighbors.length; i++) {
-      if (neighbors[i].visited === false && neighbors[i].gridStatus === 0) {
-        queue.push(neighbors[i]);
-      }
-    }
-    if (queue.length === 0) {
-      currentGrid.visited = false;
-      this.visitedArr = [];
-      return true;
-    }
+    queue.push(currentGrid);
 
     while (queue.length !== 0) {
       currentGrid = queue.shift();
-      debugger
       currentGrid.visited = true;
-      this.visitedArr.push(currentGrid);
-      if (currentGrid.ballPresent) {
-        for (let i = 0; i < this.visitedArr.length; i++) {
-          this.visitedArr[i].visited = false;
-        }
-        this.visitedArr = [];
-        return true;
-      }
-      new_neighbors = Object.values(currentGrid.neighbors).filter(Boolean);
-      for (let i = 0; i < new_neighbors.length; i++) {
-        if (new_neighbors[i].visited === false && new_neighbors[i].gridStatus === 0) {
-          queue.push(new_neighbors[i]);
+      currentGrid.gridStatus = 2;
+
+      neighbors = Object.values(currentGrid.neighbors).filter(Boolean);
+
+      for (let i = 0; i < neighbors.length; i++) {
+        if (neighbors[i].visited === false && neighbors[i].gridStatus !== 1 && !queue.includes(neighbors[i])) {
+          queue.push(neighbors[i]);
+
         }
       }
     }
-    return false;
   }
 
 
@@ -284,14 +266,17 @@ const drawGrid = () => {
         box.neighbors.top = grid[c][r - 1];
 
         // box.ballCheck();
-        // if (box.ballPresent) {
-        //   box.drawRed();
+        // if (box.ballPresent && box.gridStatus === 1) {
+        //   debugger
         // }
+
 
         if (box.gridStatus === 0) {
           box.drawEmpty();
         } else if (grid[c][r].gridStatus === 1) {
           box.drawFull();
+        } else if (box.gridStatus === 2) {
+          box.drawRed();
         }
 
     }
@@ -316,6 +301,7 @@ class Line {
     this.status = status;
     this.lineId = lineId;
     this.searchInitiate = "incomplete";
+    this.complete = "incomplete";
   }
 
 
@@ -414,6 +400,8 @@ class Line {
       }
   }
 
+
+
   updateGrid() {
     for (let i = 0; i < lines.length; i++) {
 
@@ -443,10 +431,13 @@ class Line {
             }
           }
         }
+        this.complete = "complete";
         if (this.searchInitiate === "incomplete") {
-          circleBlackOut();
-          this.searchInitiate = "complete";
-          lines[i].searchInitiate = "complete";
+          if (lines[i].complete === "complete") {
+            circleBlackOut();
+            this.searchInitiate = "complete";
+            lines[i].searchInitiate = "complete";
+          }
         }
         // blackOut();
       }
@@ -701,7 +692,7 @@ class Circle {
 const init = () => {
   particles = [];
 
-  for (let i = 0; i < 1; i++) {
+  for (let i = 0; i < 5; i++) {
     let color = getRandomColor();
     let radius = 10;
     let x = Math.random() * (canvas.width - radius * 2) + radius;
@@ -738,6 +729,8 @@ const animate = () => {
     context.clearRect(0, 0, innerWidth, innerHeight);
 
     drawGrid();
+
+
 
     for (let i = 0; i < particles.length; i++) {
       particles[i].update(particles);
