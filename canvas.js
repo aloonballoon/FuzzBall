@@ -13,8 +13,8 @@ let circle2;
 let particles;
 
 let gridHeight = 30;
-let gridColCount = 30;
-let gridRowCount = 20;
+let gridColCount = 10;
+let gridRowCount = 10;
 
 let lineId = 0;
 let pairId = 0;
@@ -115,6 +115,18 @@ const getRandomColor = () => {
   return color;
 };
 
+// const blackOut = () => {
+//   for (let c = 0; c < gridColCount; c++) {
+//     for (let r = 0; r < gridRowCount; r++) {
+//       if (!grid[c][r].bfs()) {
+//         for (let i = 0; i < grid[c][r].visitedArr.length; i++) {
+//           grid[c][r].visitedArr[i].gridStatus = 1;
+//         }
+//       }
+//     }
+//   }
+// };
+
 
 class Grid {
   constructor(gridHeight, gridX, gridY, gridId, gridStatus) {
@@ -123,7 +135,7 @@ class Grid {
     this.gridY = gridY;
     this.gridId = gridId;
     this.gridStatus = gridStatus;
-    this.neighbor = {
+    this.neighbors = {
       top: null,
       bottom: null,
       right: null,
@@ -131,6 +143,7 @@ class Grid {
     };
     this.visited = false;
     this.ballPresent = undefined;
+    this.visitedArr = [];
   }
 
   drawEmpty() {
@@ -158,6 +171,56 @@ class Grid {
     context.fill();
     context.closePath();
   }
+
+  // bfs() {
+  //   let currentGrid = this;
+  //   let neighbors = [];
+  //   let new_neighbors = [];
+  //   let queue = [];
+  //   if (currentGrid.gridStatus === 1) {
+  //     return true;
+  //   }
+  //   //is this === currentGrid? actually changing "this"?
+  //   if (currentGrid.ballPresent) {
+  //     return true;
+  //   }
+  //   this.visited = true;
+  //   this.visitedArr.push(this);
+  //
+  //   neighbors = Object.values(currentGrid.neighbors).filter(Boolean);
+  //
+  //   for (let i = 0; i < neighbors.length; i++) {
+  //     if (neighbors[i].visited === false && neighbors[i].gridStatus === 0) {
+  //       queue.push(neighbors[i]);
+  //     }
+  //   }
+  //   if (queue.length === 0) {
+  //     currentGrid.visited = false;
+  //     this.visitedArr = [];
+  //     return true;
+  //   }
+  //
+  //   while (queue.length !== 0) {
+  //     currentGrid = queue.shift();
+  //     currentGrid.visited = true;
+  //     this.visitedArr.push(currentGrid);
+  //     if (currentGrid.ballPresent) {
+  //       for (let i = 0; i < this.visitedArr.length; i++) {
+  //         this.visitedArr[i].visited = false;
+  //       }
+  //       this.visitedArr = [];
+  //       return true;
+  //     }
+  //     new_neighbors = Object.values(currentGrid.neighbors).filter(Boolean);
+  //     for (let i = 0; i < new_neighbors.length; i++) {
+  //       if (new_neighbors[i].visited === false && new_neighbors[i].gridStatus === 0) {
+  //         queue.push(new_neighbors[i]);
+  //       }
+  //     }
+  //   }
+  //   return false;
+  // }
+
 
   ballCheck() {
     let ball;
@@ -199,13 +262,15 @@ const drawGrid = () => {
           grid[c - 1] = {};
         }
 
-        box.neighbor.right = grid[c + 1][r];
-        box.neighbor.left = grid[c - 1][r];
-        box.neighbor.bottom = grid[c][r + 1];
-        box.neighbor.top = grid[c][r - 1];
+        box.neighbors.right = grid[c + 1][r];
+        box.neighbors.left = grid[c - 1][r];
+        box.neighbors.bottom = grid[c][r + 1];
+        box.neighbors.top = grid[c][r - 1];
 
         box.ballCheck();
-
+        if (box.ballPresent) {
+          box.drawRed();
+        }
         if (box.gridStatus === 0) {
           box.drawEmpty();
         } else if (grid[c][r].gridStatus === 1) {
@@ -340,9 +405,6 @@ class Line {
         let line = this;
         let box;
 
-        this.justCompleted.push(this);
-        this.justCompleted.push(lines[i]);
-
         for (let c = 0; c < gridColCount; c++) {
           for (let r = 0; r < gridRowCount; r++) {
             box = grid[c][r];
@@ -365,20 +427,27 @@ class Line {
             }
           }
         }
+        // blackOut();
       }
     }
   }
 
-  blackOut() {
+  // blackOut() {
+  //   let line;
+  //   for (let i = 0; i < this.justCompleted.length; i++) {
+  //     line = this.justCompleted[i];
+  //     if ((line.direction === "vertical" && line.side === "top") || (line.direction === "horizontal" && line.side === "left")) {
+  //
+  //     }
+  //   }
+  // }
 
-  }
-
-  callBlackOut() {
-    if (this.justCompleted.length === 2) {
-      this.blackOut();
-    }
-    this.justCompleted = [];
-  }
+  // callBlackOut() {
+  //   if (this.justCompleted.length === 2) {
+  //     this.blackOut();
+  //   }
+  //   this.justCompleted = [];
+  // }
 
 
   update(){
@@ -604,7 +673,7 @@ class Circle {
 const init = () => {
   particles = [];
 
-  for (let i = 0; i < 2; i++) {
+  for (let i = 0; i < 1; i++) {
     let color = getRandomColor();
     let radius = 10;
     let x = Math.random() * (canvas.width - radius * 2) + radius;
