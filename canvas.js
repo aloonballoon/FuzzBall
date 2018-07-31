@@ -127,6 +127,21 @@ const getRandomColor = () => {
 //   }
 // };
 
+const circleBlackOut = () => {
+  gridArrForBlackOut = [];
+  let box;
+  for (let i = 0; i < particles.length; i++) {
+    gridArrForBlackOut.push(particles[i].getGridLocation());
+    box = gridArrForBlackOut[i];
+    if (!box.bfs()) {
+      debugger
+      for (let i = 0; i < box.visitedArr.length; i++) {
+        box.visitedArr[i].gridStatus = 1;
+      }
+    }
+  }
+};
+
 
 class Grid {
   constructor(gridHeight, gridX, gridY, gridId, gridStatus) {
@@ -172,54 +187,55 @@ class Grid {
     context.closePath();
   }
 
-  // bfs() {
-  //   let currentGrid = this;
-  //   let neighbors = [];
-  //   let new_neighbors = [];
-  //   let queue = [];
-  //   if (currentGrid.gridStatus === 1) {
-  //     return true;
-  //   }
-  //   //is this === currentGrid? actually changing "this"?
-  //   if (currentGrid.ballPresent) {
-  //     return true;
-  //   }
-  //   this.visited = true;
-  //   this.visitedArr.push(this);
-  //
-  //   neighbors = Object.values(currentGrid.neighbors).filter(Boolean);
-  //
-  //   for (let i = 0; i < neighbors.length; i++) {
-  //     if (neighbors[i].visited === false && neighbors[i].gridStatus === 0) {
-  //       queue.push(neighbors[i]);
-  //     }
-  //   }
-  //   if (queue.length === 0) {
-  //     currentGrid.visited = false;
-  //     this.visitedArr = [];
-  //     return true;
-  //   }
-  //
-  //   while (queue.length !== 0) {
-  //     currentGrid = queue.shift();
-  //     currentGrid.visited = true;
-  //     this.visitedArr.push(currentGrid);
-  //     if (currentGrid.ballPresent) {
-  //       for (let i = 0; i < this.visitedArr.length; i++) {
-  //         this.visitedArr[i].visited = false;
-  //       }
-  //       this.visitedArr = [];
-  //       return true;
-  //     }
-  //     new_neighbors = Object.values(currentGrid.neighbors).filter(Boolean);
-  //     for (let i = 0; i < new_neighbors.length; i++) {
-  //       if (new_neighbors[i].visited === false && new_neighbors[i].gridStatus === 0) {
-  //         queue.push(new_neighbors[i]);
-  //       }
-  //     }
-  //   }
-  //   return false;
-  // }
+  bfs() {
+    let currentGrid = this;
+    let neighbors = [];
+    let new_neighbors = [];
+    let queue = [];
+    if (currentGrid.gridStatus === 1) {
+      return true;
+    }
+    //is this === currentGrid? actually changing "this"?
+    if (currentGrid.ballPresent) {
+      return true;
+    }
+    this.visited = true;
+    this.visitedArr.push(this);
+
+    neighbors = Object.values(currentGrid.neighbors).filter(Boolean);
+
+    for (let i = 0; i < neighbors.length; i++) {
+      if (neighbors[i].visited === false && neighbors[i].gridStatus === 0) {
+        queue.push(neighbors[i]);
+      }
+    }
+    if (queue.length === 0) {
+      currentGrid.visited = false;
+      this.visitedArr = [];
+      return true;
+    }
+
+    while (queue.length !== 0) {
+      currentGrid = queue.shift();
+      debugger
+      currentGrid.visited = true;
+      this.visitedArr.push(currentGrid);
+      if (currentGrid.ballPresent) {
+        for (let i = 0; i < this.visitedArr.length; i++) {
+          this.visitedArr[i].visited = false;
+        }
+        this.visitedArr = [];
+        return true;
+      }
+      new_neighbors = Object.values(currentGrid.neighbors).filter(Boolean);
+      for (let i = 0; i < new_neighbors.length; i++) {
+        if (new_neighbors[i].visited === false && new_neighbors[i].gridStatus === 0) {
+          queue.push(new_neighbors[i]);
+        }
+      }
+    }
+    return false;
+  }
 
 
   ballCheck() {
@@ -267,10 +283,11 @@ const drawGrid = () => {
         box.neighbors.bottom = grid[c][r + 1];
         box.neighbors.top = grid[c][r - 1];
 
-        box.ballCheck();
-        if (box.ballPresent) {
-          box.drawRed();
-        }
+        // box.ballCheck();
+        // if (box.ballPresent) {
+        //   box.drawRed();
+        // }
+
         if (box.gridStatus === 0) {
           box.drawEmpty();
         } else if (grid[c][r].gridStatus === 1) {
@@ -298,8 +315,7 @@ class Line {
     this.pairId = pairId;
     this.status = status;
     this.lineId = lineId;
-    this.complete = null;
-    this.justCompleted = [];
+    this.searchInitiate = "incomplete";
   }
 
 
@@ -427,6 +443,11 @@ class Line {
             }
           }
         }
+        if (this.searchInitiate === "incomplete") {
+          circleBlackOut();
+          this.searchInitiate = "complete";
+          lines[i].searchInitiate = "complete";
+        }
         // blackOut();
       }
     }
@@ -454,10 +475,10 @@ class Line {
     this.checkWallCollision();
     this.checkLineCollision();
     this.updateGrid();
-    this.grow();
+    this.growLine();
   }
 
-  grow() {
+  growLine() {
     if (this.direction === 'horizontal') {
 
       if (this.side === 'right' && this.status === "moving") {
@@ -637,6 +658,13 @@ class Circle {
           }
       }
     }
+  }
+
+  getGridLocation() {
+    let gridCol = Math.floor(this.x / gridHeight);
+    let gridRow = Math.floor(this.y / gridHeight);
+    return grid[gridCol][gridRow];
+
   }
 
   update(particles) {
