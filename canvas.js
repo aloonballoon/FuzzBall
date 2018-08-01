@@ -116,18 +116,6 @@ const getRandomColor = () => {
   return color;
 };
 
-// const blackOut = () => {
-//   for (let c = 0; c < gridColCount; c++) {
-//     for (let r = 0; r < gridRowCount; r++) {
-//       if (!grid[c][r].bfs()) {
-//         for (let i = 0; i < grid[c][r].visitedArr.length; i++) {
-//           grid[c][r].visitedArr[i].gridStatus = 1;
-//         }
-//       }
-//     }
-//   }
-// };
-
 const circleBlackOut = () => {
   gridArrForBlackOut = [];
   let box;
@@ -165,7 +153,6 @@ class Grid {
     };
     this.visited = false;
     this.ballPresent = undefined;
-    // this.visitedArr = [];
   }
 
   drawEmpty() {
@@ -179,18 +166,10 @@ class Grid {
   drawFull() {
     context.beginPath();
     context.rect(this.gridX, this.gridY, this.gridHeight, this.gridHeight);
-    context.strokeStyle = "red";
-    context.fillStyle = "red";
+    context.strokeStyle = "black";
+    context.fillStyle = "black";
     context.fill();
     context.stroke();
-    context.closePath();
-  }
-
-  drawRed() {
-    context.beginPath();
-    context.rect(this.gridX, this.gridY, this.gridHeight, this.gridHeight);
-    context.fillStyle = "red";
-    context.fill();
     context.closePath();
   }
 
@@ -255,19 +234,11 @@ const drawGrid = () => {
         box.neighbors.bottom = grid[c][r + 1];
         box.neighbors.top = grid[c][r - 1];
 
-        // box.ballCheck();
-        // if (box.ballPresent && box.gridStatus === 1) {
-        //   debugger
-        // }
-
-
         if (box.gridStatus === 0) {
           box.drawEmpty();
         } else if (grid[c][r].gridStatus === 1) {
           box.drawFull();
           claimedArea += 1;
-        } else if (box.gridStatus === 2) {
-          box.drawRed();
         }
 
     }
@@ -430,27 +401,9 @@ class Line {
             lines[i].searchInitiate = "complete";
           }
         }
-        // blackOut();
       }
     }
   }
-
-  // blackOut() {
-  //   let line;
-  //   for (let i = 0; i < this.justCompleted.length; i++) {
-  //     line = this.justCompleted[i];
-  //     if ((line.direction === "vertical" && line.side === "top") || (line.direction === "horizontal" && line.side === "left")) {
-  //
-  //     }
-  //   }
-  // }
-
-  // callBlackOut() {
-  //   if (this.justCompleted.length === 2) {
-  //     this.blackOut();
-  //   }
-  //   this.justCompleted = [];
-  // }
 
 
   update(){
@@ -727,8 +680,8 @@ let animateFrame;
 
 const game = () => {
   if (advancedLevel === false) {
-    if (targetArea > 50) {
-      targetArea = targetArea - level * 2;
+    if (targetArea > 60) {
+      targetArea = targetArea - 1;
       advancedLevel = true;
     }
   }
@@ -772,19 +725,59 @@ const drawLines = () => {
   }
 };
 
+const drawLives = () => {
+  context.font="25px alien";
+  context.fillStyle = "red";
+  context.fillText(`Lives: ${lives}`, 10, 25);
+};
+
+const drawLevels = () => {
+  context.font="25px alien";
+  context.fillStyle = "red";
+  context.fillText(`Level: ${level}`, canvas.width - 130, 25);
+};
+
+const drawTargetArea = () => {
+  context.font="25px alien";
+  context.fillStyle = "red";
+  context.fillText(`Target Percent:${targetArea}`, canvas.width - 430, 25);
+};
+
+const drawClaimedArea = () => {
+  context.font="25px alien";
+  context.fillStyle = "red";
+  context.fillText(`Claimed Percent:${percentArea}`, 160, 25);
+};
+
+const drawNextLevelScreen = () => {
+  context.beginPath();
+  context.rect(0, 0, canvas.width, canvas.width);
+  context.strokeStyle = "black";
+  context.fillStyle = "black";
+  context.fill();
+  context.stroke();
+  context.closePath();
+};
 
 canvas.addEventListener('click', handleClick);
+
+const drawStats = () => {
+  drawClaimedArea();
+  drawTargetArea();
+  drawLives();
+  drawLevels();
+};
 
 
 
 const animate = () => {
     animateFrame = requestAnimationFrame(animate);
     context.clearRect(0, 0, innerWidth, innerHeight);
-
     drawGrid();
     drawParticles();
-    drawLines();
     calculateArea();
+    drawLines();
+    drawStats();
     game();
 
   };
