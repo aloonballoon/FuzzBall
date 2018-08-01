@@ -9,6 +9,7 @@ const mouse = {
 };
 
 
+
 let particles;
 
 let gridHeight = 30;
@@ -199,8 +200,6 @@ class Grid {
     let neighbors = [];
     let queue = [];
 
-    //is this === currentGrid? actually changing "this"?
-
     queue.push(currentGrid);
 
     while (queue.length !== 0) {
@@ -218,20 +217,6 @@ class Grid {
       }
     }
   }
-
-
-  ballCheck() {
-    let ball;
-    for (let i = 0; i < particles.length; i++) {
-      ball = particles[i];
-      if (ball.x + ball.radius > this.gridX && ball.x + ball.radius < this.gridX + gridHeight && ball.y + ball.radius > this.gridY && ball.y + ball.radius < this.gridY + gridHeight) {
-          this.ballPresent = true;
-      }
-      else {
-        this.ballPresent = false;
-      }
-    }
-  }
 }
 
 for (let c = 0; c < gridColCount; c++) {
@@ -243,6 +228,7 @@ for (let c = 0; c < gridColCount; c++) {
 }
 
 const drawGrid = () => {
+  claimedArea = 0;
   for (let c = 0; c < gridColCount; c++) {
     for (let r = 0; r < gridRowCount; r++) {
         let box = grid[c][r];
@@ -275,6 +261,7 @@ const drawGrid = () => {
           box.drawEmpty();
         } else if (grid[c][r].gridStatus === 1) {
           box.drawFull();
+          claimedArea += 1;
         } else if (box.gridStatus === 2) {
           box.drawRed();
         }
@@ -692,7 +679,7 @@ class Circle {
 const init = () => {
   particles = [];
 
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < ballCount; i++) {
     let color = getRandomColor();
     let radius = 10;
     let x = Math.random() * (canvas.width - radius * 2) + radius;
@@ -722,11 +709,22 @@ const getDistance = (x1,y1, x2, y2) => {
   return Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
 };
 
-const welcomeWindow = () => {
-  context.beginPath();
-  context.fillStyle = "black";
-  context.fillRect(0, 0, canvas.width, canvas.height);
-};
+let level = 1;
+let ballCount = level + 1;
+let claimedArea;
+let totalArea = gridColCount * gridRowCount;
+let lives = 5;
+let target = 77;
+let percentArea = claimedArea/totalArea;
+
+// const game = () => {
+//   target = target - level * 2;
+//   if (percentArea >= targetArea) {
+//     nextLevel();
+//   }
+// };
+
+
 
 canvas.addEventListener('click', handleClick);
 
@@ -741,7 +739,7 @@ const animate = () => {
     for (let i = 0; i < particles.length; i++) {
       particles[i].update(particles);
     }
-
+    console.log(percentArea);
     for (let i = 0; i < lines.length; i++) {
       lines[i].update();
     }
