@@ -19,7 +19,8 @@ canvas {
   border: 1px solid black;
 }
 
-.canvas-direction-article {
+.canvas-article {;
+ height: auto;
  width: 100%;
  display: flex;
  justify-content: center;

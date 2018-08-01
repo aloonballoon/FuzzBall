@@ -51,7 +51,7 @@ canvas.addEventListener('contextmenu', (event) => {
     return false;
 }, false);
 
-const drawLines = () => {
+const createLines = () => {
   let box;
   for (let c = 0; c < gridColCount ; c++) {
     for (let r = 0; r < gridRowCount; r++) {
@@ -93,7 +93,7 @@ const handleClick = (event) => {
   mouse.x = clickX;
   mouse.y = clickY;
   if (checkLineMoving()) {
-    drawLines();
+    createLines();
   }
 };
 
@@ -219,13 +219,17 @@ class Grid {
   }
 }
 
-for (let c = 0; c < gridColCount; c++) {
-  grid[c] = [];
-  for (let r = 0; r < gridRowCount; r++) {
-    grid[c][r] = new Grid(0, 0, 0, gridId, 0);
-    gridId += 1;
+const initiateGrid = () => {
+  for (let c = 0; c < gridColCount; c++) {
+    grid[c] = [];
+    for (let r = 0; r < gridRowCount; r++) {
+      grid[c][r] = new Grid(0, 0, 0, gridId, 0);
+      gridId += 1;
+    }
   }
-}
+};
+
+
 
 const drawGrid = () => {
   claimedArea = 0;
@@ -676,7 +680,9 @@ class Circle {
 
  }
 
-const init = () => {
+
+
+const initiateParticles = () => {
   particles = [];
 
   for (let i = 0; i < ballCount; i++) {
@@ -684,8 +690,8 @@ const init = () => {
     let radius = 10;
     let x = Math.random() * (canvas.width - radius * 2) + radius;
     let y = Math.random() * (canvas.height - radius * 2) + radius;
-    let dx = (Math.random() - 0.5) * 20;
-    let dy = (Math.random() - 0.5) * 20;
+    let dx = (Math.random() - 0.5) * 10;
+    let dy = (Math.random() - 0.5) * 10;
 
     if (i !== 0) {
       for (let j = 0; j < particles.length; j++) {
@@ -710,20 +716,61 @@ const getDistance = (x1,y1, x2, y2) => {
 };
 
 let level = 1;
-let ballCount = level + 1;
-let claimedArea;
+let ballCount = 2;
+let claimedArea = 0;
 let totalArea = gridColCount * gridRowCount;
 let lives = 5;
-let target = 77;
-let percentArea = claimedArea/totalArea;
+let targetArea = 75;
+let percentArea;
+let advancedLevel = false;
+let animateFrame;
 
-// const game = () => {
-//   target = target - level * 2;
-//   if (percentArea >= targetArea) {
-//     nextLevel();
-//   }
-// };
+const game = () => {
+  if (advancedLevel === false) {
+    if (targetArea > 50) {
+      targetArea = targetArea - level * 2;
+      advancedLevel = true;
+    }
+  }
+  if (percentArea >= targetArea) {
+    nextLevel();
+  }
+};
 
+const calculateArea = () => {
+  percentArea =  Math.floor(claimedArea / totalArea * 100);
+};
+
+const nextLevel = () => {
+  level += 1;
+  ballCount = level + 1;
+  claimedArea = 0;
+  lives += 1;
+  advancedLevel = false;
+  lines = [];
+  particles = [];
+  grid = [];
+  cancelAnimationFrame(animateFrame);
+  initiateGame();
+};
+
+const initiateGame = () => {
+  initiateGrid();
+  initiateParticles();
+  animate();
+};
+
+const drawParticles = () => {
+  for (let i = 0; i < particles.length; i++) {
+    particles[i].update(particles);
+  }
+};
+
+const drawLines = () => {
+  for (let i = 0; i < lines.length; i++) {
+    lines[i].update();
+  }
+};
 
 
 canvas.addEventListener('click', handleClick);
@@ -731,20 +778,16 @@ canvas.addEventListener('click', handleClick);
 
 
 const animate = () => {
-    requestAnimationFrame(animate);
+    animateFrame = requestAnimationFrame(animate);
     context.clearRect(0, 0, innerWidth, innerHeight);
 
     drawGrid();
+    drawParticles();
+    drawLines();
+    calculateArea();
+    game();
 
-    for (let i = 0; i < particles.length; i++) {
-      particles[i].update(particles);
-    }
-    console.log(percentArea);
-    for (let i = 0; i < lines.length; i++) {
-      lines[i].update();
-    }
   };
 
 
-  init();
-  animate();
+  initiateGame();
