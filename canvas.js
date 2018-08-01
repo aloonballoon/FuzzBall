@@ -690,7 +690,6 @@ const game = () => {
     }
   }
   if (percentArea >= targetArea) {
-    // nextLevel();
     nextLevelScreenOn = false;
     endLevel();
     drawNextLevelScreen();
@@ -704,14 +703,26 @@ const endLevel = () => {
 const drawNextLevelScreen = () => {
   let nextLevelFrame = requestAnimationFrame(drawNextLevelScreen);
   nextLevelScreen();
+  levelCompleteText();
+  nextLevelText();
   if (nextLevelScreenOn === false) {
     nextLevelTimeout = setTimeout(nextLevel, 2000);
     nextLevelScreenOn = true;
   }
 };
 
-const timeout = () => {
+const levelCompleteText = () => {
+  context.font="75px alien";
+  context.fillStyle = "white";
+  context.fillText(`LEVEL COMPLETE`, 125, 200);
 };
+
+const nextLevelText = () => {
+  context.font="75px alien";
+  context.fillStyle = "white";
+  context.fillText(`NEXT LEVEL: ${level + 1}`, 150, 400);
+};
+
 
 const nextLevelScreen = () => {
   context.beginPath();
@@ -728,7 +739,6 @@ const calculateArea = () => {
 };
 
 const nextLevel = () => {
-  clearTimeout(nextLevelTimeout);
   level += 1;
   ballCount = level + 1;
   claimedArea = 0;
@@ -812,7 +822,6 @@ const animate = () => {
     drawLines();
     drawStats();
     game();
-
   };
 
 
