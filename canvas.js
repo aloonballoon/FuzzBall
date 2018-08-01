@@ -726,19 +726,11 @@ const welcomeWindow = () => {
   context.beginPath();
   context.fillStyle = "black";
   context.fillRect(0, 0, canvas.width, canvas.height);
-
 };
 
 canvas.addEventListener('click', handleClick);
 
-window.addEventListener('keydown', (event) => {
-  if (event.key === "Enter") {
-    init();
-    animate();
-  }
-});
 
-welcomeWindow();
 
 const animate = () => {
     requestAnimationFrame(animate);
@@ -754,3 +746,7 @@ const animate = () => {
       lines[i].update();
     }
   };
+
+
+  init();
+  animate();
