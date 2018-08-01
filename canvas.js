@@ -673,10 +673,14 @@ let ballCount = 2;
 let claimedArea = 0;
 let totalArea = gridColCount * gridRowCount;
 let lives = 5;
-let targetArea = 75;
+let targetArea = 20;
 let percentArea;
 let advancedLevel = false;
+let nextLevelWaiting = true;
+let nextLevelFrame;
 let animateFrame;
+let nextLevelScreenOn = false;
+let nextLevelTimeout;
 
 const game = () => {
   if (advancedLevel === false) {
@@ -686,8 +690,37 @@ const game = () => {
     }
   }
   if (percentArea >= targetArea) {
-    nextLevel();
+    // nextLevel();
+    nextLevelScreenOn = false;
+    endLevel();
+    drawNextLevelScreen();
   }
+};
+
+const endLevel = () => {
+  cancelAnimationFrame(animateFrame);
+};
+
+const drawNextLevelScreen = () => {
+  let nextLevelFrame = requestAnimationFrame(drawNextLevelScreen);
+  nextLevelScreen();
+  if (nextLevelScreenOn === false) {
+    nextLevelTimeout = setTimeout(nextLevel, 2000);
+    nextLevelScreenOn = true;
+  }
+};
+
+const timeout = () => {
+};
+
+const nextLevelScreen = () => {
+  context.beginPath();
+  context.rect(0, 0, canvas.width, canvas.width);
+  context.strokeStyle = "black";
+  context.fillStyle = "black";
+  context.fill();
+  context.stroke();
+  context.closePath();
 };
 
 const calculateArea = () => {
@@ -695,6 +728,7 @@ const calculateArea = () => {
 };
 
 const nextLevel = () => {
+  clearTimeout(nextLevelTimeout);
   level += 1;
   ballCount = level + 1;
   claimedArea = 0;
@@ -703,7 +737,7 @@ const nextLevel = () => {
   lines = [];
   particles = [];
   grid = [];
-  cancelAnimationFrame(animateFrame);
+  cancelAnimationFrame(nextLevelFrame);
   initiateGame();
 };
 
@@ -712,6 +746,7 @@ const initiateGame = () => {
   initiateParticles();
   animate();
 };
+
 
 const drawParticles = () => {
   for (let i = 0; i < particles.length; i++) {
@@ -749,16 +784,6 @@ const drawClaimedArea = () => {
   context.fillText(`Claimed Percent:${percentArea}`, 160, 25);
 };
 
-const drawNextLevelScreen = () => {
-  context.beginPath();
-  context.rect(0, 0, canvas.width, canvas.width);
-  context.strokeStyle = "black";
-  context.fillStyle = "black";
-  context.fill();
-  context.stroke();
-  context.closePath();
-};
-
 canvas.addEventListener('click', handleClick);
 
 const drawStats = () => {
@@ -767,6 +792,14 @@ const drawStats = () => {
   drawLives();
   drawLevels();
 };
+
+// const wait = (ms) => {
+//   let start = new Date().getTime();
+//   let end = start;
+//   while(end < start + ms) {
+//     end = new Date().getTime();
+//   }
+// };
 
 
 
