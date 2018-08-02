@@ -1,5 +1,6 @@
 const canvas = document.querySelector('canvas');
 const context = canvas.getContext('2d');
+canvas.style.cursor = "ns-resize";
 
 
 const mouse = {
@@ -11,6 +12,7 @@ const mouse = {
 let lightsaberSound;
 let clashLightsaberSound;
 let humLightsaberSound;
+let duelOfTheFates;
 
 let particles;
 
@@ -43,9 +45,11 @@ canvas.addEventListener('contextmenu', (event) => {
     switch (mouse.direction) {
       case 'vertical':
         mouse.direction = 'horizontal';
+        canvas.style.cursor = "ew-resize";
         break;
       case 'horizontal':
         mouse.direction = 'vertical';
+        canvas.style.cursor = "ns-resize";
         break;
       default:
         return null;
@@ -66,6 +70,7 @@ class Sound {
     };
     this.stop = function() {
       this.sound.pause();
+      this.currentTime = 0;
     };
   }
 }
@@ -73,6 +78,8 @@ class Sound {
 lightsaberSound = new Sound("mp3/coolsaber.mp3");
 clashLightsaberSound = new Sound("mp3/clash.mp3");
 humLightsaberSound = new Sound("mp3/humsaber.mp3");
+duelOfTheFates = new Sound("mp3/duel.mp3");
+
 
 
 const createLines = () => {
@@ -89,6 +96,7 @@ const createLines = () => {
           lines.push(line2);
           lineId += 1;
           pairId += 1;
+          lightsaberSound.play();
 
         }
       } else if (mouse.direction === 'horizontal') {
@@ -100,6 +108,7 @@ const createLines = () => {
             lines.push(line2);
             pairId += 1;
             lineId += 1;
+            lightsaberSound.play();
           }
         }
       }
@@ -117,8 +126,6 @@ const handleClick = (event) => {
   mouse.x = clickX;
   mouse.y = clickY;
   if (checkLineMoving()) {
-    lightsaberSound.play();
-    // humLightsaberSound.play();
     createLines();
   }
 };
@@ -711,7 +718,7 @@ let level = 1;
 let ballCount = 2;
 let claimedArea = 0;
 let totalArea = gridColCount * gridRowCount;
-let lives = 5;
+let lives = 1;
 let targetArea = 76;
 let percentArea;
 let advancedLevel = false;
@@ -722,6 +729,7 @@ let nextLevelScreenOn = true;
 let nextLevelTimeout;
 let restartListener;
 let restartable = false;
+let playEndOfGameMusic = true;
 
 const newGameResetValues = () => {
   level = 1;
@@ -736,6 +744,8 @@ const newGameResetValues = () => {
   lines = [];
   particles = [];
   grid = [];
+  duelOfTheFates = new Sound("mp3/duel.mp3");
+  playEndOfGameMusic = true;
 };
 
 const game = () => {
@@ -755,7 +765,15 @@ const game = () => {
   }
 };
 
+const stopGameOverMusic = () => {
+  duelOfTheFates = false;
+};
+
 const gameOver = () => {
+  if (playEndOfGameMusic === true) {
+    duelOfTheFates.play();
+  }
+  playEndOfGameMusic = false;
   blackScreen();
   gameOverText();
   restartText();
@@ -763,6 +781,7 @@ const gameOver = () => {
   restartListener = window.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
       if (restartable === true) {
+        duelOfTheFates.stop();
         restartGame();
       }
     }
