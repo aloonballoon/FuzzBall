@@ -8,7 +8,9 @@ const mouse = {
   direction: 'vertical'
 };
 
-
+let lightsaberSound;
+let clashLightsaberSound;
+let humLightsaberSound;
 
 let particles;
 
@@ -50,6 +52,28 @@ canvas.addEventListener('contextmenu', (event) => {
     }
     return false;
 }, false);
+
+class Sound {
+  constructor(src) {
+    this.sound = document.createElement("audio");
+    this.sound.src = src;
+    this.sound.setAttribute("preload", "auto");
+    this.sound.setAttribute("controls", "none");
+    this.sound.style.display = "none";
+    document.body.appendChild(this.sound);
+    this.play = function() {
+      this.sound.play();
+    };
+    this.stop = function() {
+      this.sound.pause();
+    };
+  }
+}
+
+lightsaberSound = new Sound("mp3/coolsaber.mp3");
+clashLightsaberSound = new Sound("mp3/clash.mp3");
+humLightsaberSound = new Sound("mp3/humsaber.mp3");
+
 
 const createLines = () => {
   let box;
@@ -93,6 +117,8 @@ const handleClick = (event) => {
   mouse.x = clickX;
   mouse.y = clickY;
   if (checkLineMoving()) {
+    lightsaberSound.play();
+    // humLightsaberSound.play();
     createLines();
   }
 };
@@ -545,6 +571,8 @@ class Circle {
                 delete lines[i];
                 delete lines[j];
                 lives -= 1;
+                lightsaberSound.stop();
+                clashLightsaberSound.play();
                 lines = lines.filter(Boolean);
               }
             }
@@ -559,6 +587,8 @@ class Circle {
                 delete lines[i];
                 delete lines[j];
                 lives -= 1;
+                lightsaberSound.stop();
+                clashLightsaberSound.play();
                 lines = lines.filter(Boolean);
               }
             }
@@ -575,6 +605,8 @@ class Circle {
                   delete lines[i];
                   delete lines[j];
                   lives -= 1;
+                  lightsaberSound.stop();
+                  clashLightsaberSound.play();
                   lines = lines.filter(Boolean);
                 }
               }
@@ -589,6 +621,8 @@ class Circle {
                   delete lines[i];
                   delete lines[j];
                   lives -= 1;
+                  lightsaberSound.stop();
+                  clashLightsaberSound.play();
                   lines = lines.filter(Boolean);
                 }
               }
@@ -677,7 +711,7 @@ let level = 1;
 let ballCount = 2;
 let claimedArea = 0;
 let totalArea = gridColCount * gridRowCount;
-let lives = 1;
+let lives = 5;
 let targetArea = 76;
 let percentArea;
 let advancedLevel = false;
