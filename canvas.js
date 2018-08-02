@@ -688,8 +688,8 @@ const initiateParticles = () => {
     let radius = 10;
     let x = Math.random() * (canvas.width - radius * 2) + radius;
     let y = Math.random() * (canvas.height - radius * 2) + radius;
-    let dx = (Math.random() - 0.5) * 10;
-    let dy = (Math.random() - 0.5) * 10;
+    let dx = (Math.random() - 0.5) * 12;
+    let dy = (Math.random() - 0.5) * 12;
 
     if (i !== 0) {
       for (let j = 0; j < particles.length; j++) {
@@ -713,12 +713,13 @@ const getDistance = (x1,y1, x2, y2) => {
   return Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
 };
 
-
+let startingBallCount = 3;
 let level = 1;
-let ballCount = 2;
+let ballCount;
+ballCount = startingBallCount;
 let claimedArea = 0;
 let totalArea = gridColCount * gridRowCount;
-let lives = 1;
+let lives = 5;
 let targetArea = 76;
 let percentArea;
 let advancedLevel = false;
@@ -733,7 +734,7 @@ let playEndOfGameMusic = true;
 
 const newGameResetValues = () => {
   level = 1;
-  ballCount = 2;
+  startingBallCount = 3;
   claimedArea = 0;
   lives = 5;
   targetArea = 76;
@@ -850,7 +851,7 @@ const calculateArea = () => {
 
 const nextLevel = () => {
   level += 1;
-  ballCount = level + 1;
+  ballCount += 1;
   claimedArea = 0;
   lives += 1;
   advancedLevel = false;
