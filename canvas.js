@@ -544,6 +544,7 @@ class Circle {
               if (lines[j].pairId === lines[i].pairId && lines[j].lineId !== lines[i].lineId) {
                 delete lines[i];
                 delete lines[j];
+                lives -= 1;
                 lines = lines.filter(Boolean);
               }
             }
@@ -557,6 +558,7 @@ class Circle {
               if (lines[j].pairId === lines[i].pairId && lines[j].lineId !== lines[i].lineId) {
                 delete lines[i];
                 delete lines[j];
+                lives -= 1;
                 lines = lines.filter(Boolean);
               }
             }
@@ -572,6 +574,7 @@ class Circle {
                 if (lines[j].pairId === lines[i].pairId && lines[j].lineId !== lines[i].lineId) {
                   delete lines[i];
                   delete lines[j];
+                  lives -= 1;
                   lines = lines.filter(Boolean);
                 }
               }
@@ -585,6 +588,7 @@ class Circle {
                 if (lines[j].pairId === lines[i].pairId && lines[j].lineId !== lines[i].lineId) {
                   delete lines[i];
                   delete lines[j];
+                  lives -= 1;
                   lines = lines.filter(Boolean);
                 }
               }
@@ -668,19 +672,37 @@ const getDistance = (x1,y1, x2, y2) => {
   return Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
 };
 
+
 let level = 1;
 let ballCount = 2;
 let claimedArea = 0;
 let totalArea = gridColCount * gridRowCount;
-let lives = 5;
-let targetArea = 20;
+let lives = 1;
+let targetArea = 76;
 let percentArea;
 let advancedLevel = false;
 let nextLevelWaiting = true;
 let nextLevelFrame;
 let animateFrame;
-let nextLevelScreenOn = false;
+let nextLevelScreenOn = true;
 let nextLevelTimeout;
+let restartListener;
+let restartable = false;
+
+const newGameResetValues = () => {
+  level = 1;
+  ballCount = 2;
+  claimedArea = 0;
+  lives = 5;
+  targetArea = 76;
+  advancedLevel = false;
+  nextLevelWaiting = true;
+  nextLevelScreenOn = true;
+  restartable = false;
+  lines = [];
+  particles = [];
+  grid = [];
+};
 
 const game = () => {
   if (advancedLevel === false) {
@@ -694,6 +716,41 @@ const game = () => {
     endLevel();
     drawNextLevelScreen();
   }
+  if (lives === 0) {
+    gameOver();
+  }
+};
+
+const gameOver = () => {
+  blackScreen();
+  gameOverText();
+  restartText();
+  restartable = true;
+  restartListener = window.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      if (restartable === true) {
+        restartGame();
+      }
+    }
+  });
+};
+
+const restartGame = () => {
+  cancelAnimationFrame(animateFrame);
+  newGameResetValues();
+  initiateGame();
+};
+
+const gameOverText = () => {
+  context.font="75px alien";
+  context.fillStyle = "white";
+  context.fillText(`GAME OVER`, 225, 200);
+};
+
+const restartText = () => {
+  context.font="50px alien";
+  context.fillStyle = "white";
+  context.fillText(`PRESS ENTER TO RESTART`, 115, 400);
 };
 
 const endLevel = () => {
@@ -702,7 +759,7 @@ const endLevel = () => {
 
 const drawNextLevelScreen = () => {
   let nextLevelFrame = requestAnimationFrame(drawNextLevelScreen);
-  nextLevelScreen();
+  blackScreen();
   levelCompleteText();
   nextLevelText();
   if (nextLevelScreenOn === false) {
@@ -724,7 +781,7 @@ const nextLevelText = () => {
 };
 
 
-const nextLevelScreen = () => {
+const blackScreen = () => {
   context.beginPath();
   context.rect(0, 0, canvas.width, canvas.width);
   context.strokeStyle = "black";
@@ -802,16 +859,6 @@ const drawStats = () => {
   drawLives();
   drawLevels();
 };
-
-// const wait = (ms) => {
-//   let start = new Date().getTime();
-//   let end = start;
-//   while(end < start + ms) {
-//     end = new Date().getTime();
-//   }
-// };
-
-
 
 const animate = () => {
     animateFrame = requestAnimationFrame(animate);
