@@ -735,6 +735,7 @@ let playEndOfGameMusic = true;
 const newGameResetValues = () => {
   level = 1;
   startingBallCount = 3;
+  ballCount = startingBallCount;
   claimedArea = 0;
   lives = 5;
   targetArea = 76;
