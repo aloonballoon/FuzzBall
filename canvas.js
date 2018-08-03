@@ -882,30 +882,6 @@ const drawLines = () => {
   }
 };
 
-const drawLives = () => {
-  context.font="25px alien";
-  context.fillStyle = "red";
-  context.fillText(`Lives: ${lives}`, 10, 25);
-};
-
-const drawLevels = () => {
-  context.font="25px alien";
-  context.fillStyle = "red";
-  context.fillText(`Level: ${level}`, canvas.width - 130, 25);
-};
-
-const drawTargetArea = () => {
-  context.font="25px alien";
-  context.fillStyle = "red";
-  context.fillText(`Target Percent:${targetArea}`, canvas.width - 430, 25);
-};
-
-const drawClaimedArea = () => {
-  context.font="25px alien";
-  context.fillStyle = "red";
-  context.fillText(`Claimed Percent:${percentArea}`, 160, 25);
-};
-
 canvas.addEventListener('click', handleClick);
 
 const drawStats = () => {
@@ -929,7 +905,6 @@ const animate = () => {
     drawParticles();
     calculateArea();
     drawLines();
-    // drawStats();
     updateStats();
     game();
   };

@@ -64,7 +64,10 @@ canvas {
   margin-top: 15px;
   margin-bottom: 15px;
   color: white;
-  font-size: 18px;
+  font-size: 15px;
+  /* word-spacing: 2px; */
+  letter-spacing: 3px;
+  line-height: 17px;
 }
 
 .directions-aside {
@@ -73,6 +76,7 @@ canvas {
   background-color: rgb(0,0,0, 0.5);
   margin-right: 150px;
   border: white 1px solid;
+  overflow: scroll;
 }
 
 .directions-header-div {
@@ -133,22 +137,9 @@ canvas {
   font-size: 20px;
 }
 
-
-
-#lives-div {
-
-}
-
-#claimed-percent-div {
-
-}
-
-#target-percent-div {
-
-}
-
-#level-div {
-
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
 }
 
 /* @media (max-width: 1800px) {
