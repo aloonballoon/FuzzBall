@@ -9,39 +9,37 @@
     <title>FuzzBall</title>
   </head>
   <body id="body">
-    <button id="mute-sound-button"><img src="images/sound_on.png"></button>
+    <header>
+      <div class="dropdown">
+        <button class="dropbtn">Directions</button>
+        <div class="dropdown-content">
+          <ul class="directions-ul">
+            <li>
+              1. Click to draw walls. Right click to switch between vertical and horizontal walls
+            </li>
+            <li>
+              2. If a wall is built with no fuzzballs on a side, that area will fill in and is "captured". Captured area adds to your score
+            </li>
+            <li>
+              3. If a fuzzball hits a wall as it is being built the wall disappears and you will lose a life
+            </li>
+            <li>
+              4. Once both sides of a growing wall hit either another wall or the game edge, the wall solidifies and the balls can no longer pass through
+            </li>
+            <li>
+              5. Claim the target percentage of area to advance levels
+            </li>
+          </ul>
+        </div>
+      </div>
+    </header>
 
-    <section class="canvas-section">
+    <section class="game-section">
       <h1 class="canvas-h1">
         Welcome to FuzzBall
       </h1>
-      <article class="canvas-article">
 
-        <aside class="directions-aside">
-          <section class="directions-section">
-            <div class="directions-header-div">
-              Directions:
-            </div>
-            <ul class="directions-ul">
-              <li>
-                1. Click to draw walls. Right click to switch between vertical and horizontal walls
-              </li>
-              <li>
-                2. If a wall is built with no fuzzballs on a side, that area will fill in and is "captured". Captured area adds to your score
-              </li>
-              <li>
-                3. If a fuzzball hits a wall as it is being built the wall disappears and you will lose a life
-              </li>
-              <li>
-                4. Once both sides of a growing wall hit either another wall or the game edge, the wall solidifies and the balls can no longer pass through
-              </li>
-              <li>
-                5. Claim the target percentage of area to advance levels
-              </li>
-            </ul>
-          </section>
 
-        </aside>
         <div class="canvas-stats-div">
           <span class="stats-span">
             <div id="lives-div">
@@ -58,28 +56,6 @@
             <a class="author-footer" href="http://www.alanuraz.com">Coded by Alan Uraz</a>
           </footer>
         </div>
-
-        <aside class="contact-aside">
-
-          <section class="contact-section">
-            <div class="contact-header-div">
-              Contact Me:
-            </div>
-            <ul class="contact-ul">
-              <li>
-                  <a href="http://www.alanuraz.com">Alan Uraz</a>
-              </li>
-              <li>
-                <a href="http://www.github.com/aloonballoon">GitHub</a>
-              </li>
-              <li>
-                <a href="http://www.linkedin.com/in/alanuraz">LinkedIn</a>
-              </li>
-            </ul>
-          </section>
-
-        </aside>
-      </article>
     </section>
     <script src="./canvas.js"></script>
   </body>
