@@ -6,6 +6,19 @@ html {
   background-image: url(images/neon_pink_blue.jpg);
 }
 
+body {
+  position: relative;
+}
+
+img {
+  position: absolute;
+  left: 30%;
+  width: 50px;
+  height: 50px;
+  display: none;
+  /* background-color: green; */
+}
+
 .links-footer {
   width: 30%;
   display: flex;
@@ -19,13 +32,18 @@ canvas {
   width: 900px;
 }
 
+.canvas-stats-div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .stats-span {
   width: 900px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   background-color: rgb(0,0,0, 0.5);
-
 }
 
 .stats-span div {
@@ -48,7 +66,7 @@ canvas {
  height: auto;
  width: 100%;
  display: flex;
- justify-content: center;
+ justify-content: space-between;
 }
 
 .directions-section {
@@ -65,16 +83,16 @@ canvas {
   margin-bottom: 15px;
   color: white;
   font-size: 15px;
-  /* word-spacing: 2px; */
   letter-spacing: 3px;
   line-height: 17px;
 }
 
 .directions-aside {
   width: 300px;
-  height: 600px;
+  height: 640px;
   background-color: rgb(0,0,0, 0.5);
-  margin-right: 150px;
+  margin-left: 150px;
+  margin-right: 30px;
   border: white 1px solid;
   overflow: scroll;
 }
@@ -115,9 +133,10 @@ canvas {
 
 .contact-aside {
   width: 300px;
-  height: 600px;
+  height: 640px;
   background-color: rgb(0,0,0, 0.5);
-  margin-left: 150px;
+  margin-right: 150px;
+  margin-left: 30px;
   border: white 1px solid;
 }
 
@@ -141,6 +160,8 @@ canvas {
   width: 0px;
   background: transparent;
 }
+
+
 
 /* @media (max-width: 1800px) {
   .directions-ul li {

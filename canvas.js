@@ -1,3 +1,5 @@
+
+
 const canvas = document.querySelector('canvas');
 const context = canvas.getContext('2d');
 canvas.style.cursor = "ns-resize";
@@ -9,6 +11,7 @@ const mouse = {
   direction: 'vertical'
 };
 
+let soundOn = true;
 let lightsaberSound;
 let clashLightsaberSound;
 let humLightsaberSound;
@@ -65,13 +68,17 @@ class Sound {
     this.sound.setAttribute("controls", "none");
     this.sound.style.display = "none";
     document.body.appendChild(this.sound);
-    this.play = function() {
-      this.sound.play();
-    };
-    this.stop = function() {
+  }
+  stop() {
+    if (soundOn) {
       this.sound.pause();
       this.currentTime = 0;
-    };
+    }
+  }
+  play() {
+    if (soundOn) {
+      this.sound.play();
+    }
   }
 }
 

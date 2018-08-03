@@ -9,21 +9,12 @@
     <title>FuzzBall</title>
   </head>
   <body id="body">
+    <button id="mute-sound-button"><img src="images/sound_on.png"></button>
 
     <section class="canvas-section">
       <h1 class="canvas-h1">
         Welcome to FuzzBall
       </h1>
-      <span class="stats-span">
-        <div id="lives-div">
-        </div>
-        <div id="claimed-percent-div">
-        </div>
-        <div id="target-percent-div">
-        </div>
-        <div id="level-div">
-        </div>
-      </span>
       <article class="canvas-article">
 
         <aside class="directions-aside">
@@ -51,8 +42,22 @@
           </section>
 
         </aside>
-
-        <canvas></canvas>
+        <div class="canvas-stats-div">
+          <span class="stats-span">
+            <div id="lives-div">
+            </div>
+            <div id="claimed-percent-div">
+            </div>
+            <div id="target-percent-div">
+            </div>
+            <div id="level-div">
+            </div>
+          </span>
+          <canvas></canvas>
+          <footer class="links-footer">
+            <a class="author-footer" href="http://www.alanuraz.com">Coded by Alan Uraz</a>
+          </footer>
+        </div>
 
         <aside class="contact-aside">
 
@@ -75,9 +80,6 @@
 
         </aside>
       </article>
-        <footer class="links-footer">
-          <a class="author-footer" href="http://www.alanuraz.com">Coded by Alan Uraz</a>
-        </footer>
     </section>
     <script src="./canvas.js"></script>
   </body>
