@@ -16,10 +16,36 @@ canvas {
   background-color: rgb(169,169,169, 0.5);
   border: 1px solid black;
   height: 600px;
+  width: 900px;
 }
 
+.stats-span {
+  width: 900px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: rgb(0,0,0, 0.5);
+
+}
+
+.stats-span div {
+  color: white;
+  font-size: 20px;
+  color: red;
+  padding: 10px;
+}
+
+.canvas-section {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+
 .canvas-article {;
- height: 600px;
+ height: auto;
  width: 100%;
  display: flex;
  justify-content: center;
@@ -53,15 +79,6 @@ canvas {
   margin-top: 20px;
   color: white;
   font-size: 30px;
-}
-
-
-.canvas-section {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 }
 
 .canvas-h1 {
@@ -115,3 +132,27 @@ canvas {
   color: white;
   font-size: 20px;
 }
+
+
+
+#lives-div {
+
+}
+
+#claimed-percent-div {
+
+}
+
+#target-percent-div {
+
+}
+
+#level-div {
+
+}
+
+/* @media (max-width: 1800px) {
+  .directions-ul li {
+    font-size: 15px;
+  }
+} */

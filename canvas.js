@@ -762,7 +762,7 @@ const game = () => {
     endLevel();
     drawNextLevelScreen();
   }
-  if (lives === 0) {
+  if (lives <= 0) {
     gameOver();
   }
 };
@@ -915,6 +915,13 @@ const drawStats = () => {
   drawLevels();
 };
 
+const updateStats = () => {
+  $("#lives-div").text(`LIVES: ${lives}`);
+  $("#claimed-percent-div").text(`CLAIMED PERCENT: ${percentArea}`);
+  $("#target-percent-div").text(`TARGET PERCENT: ${targetArea}`);
+  $("#level-div").text(`LEVEL: ${level}`);
+};
+
 const animate = () => {
     animateFrame = requestAnimationFrame(animate);
     context.clearRect(0, 0, innerWidth, innerHeight);
@@ -922,9 +929,9 @@ const animate = () => {
     drawParticles();
     calculateArea();
     drawLines();
-    drawStats();
+    // drawStats();
+    updateStats();
     game();
   };
-
 
   initiateGame();
