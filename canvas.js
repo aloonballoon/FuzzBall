@@ -94,7 +94,7 @@ const createLines = () => {
   for (let c = 0; c < gridColCount ; c++) {
     for (let r = 0; r < gridRowCount; r++) {
       box = grid[c][r];
-      if (mouse.direction === 'vertical') {
+      if (mouse.direction === 'vertical' && box.gridStatus === 0) {
         if (mouse.x > box.gridX && mouse.x < box.gridHeight + box.gridX && mouse.y > box.gridY && mouse.y < box.gridY + box.gridHeight) {
           const line1 = new Line(box.gridX, box.gridY, mouse.direction, box.gridHeight, "bottom", pairId, "moving", lineId);
           lines.push(line1);
@@ -347,7 +347,7 @@ class Line {
     let xTouching;
     let yTouching;
 
-    xTouching = this.lineX + this.width === otherLine.lineX;
+    xTouching = this.lineX + this.width === otherLine.lineX + otherLine.gridHeight;
     yTouching = ((this.lineY > otherLine.lineY) && (this.lineY < (otherLine.lineY + otherLine.height))) || ((this.lineY < otherLine.lineY) && (this.lineY >= (otherLine.lineY + otherLine.height))) || this.lineY === otherLine.lineY;
 
     if (xTouching && yTouching) {
@@ -424,7 +424,7 @@ class Line {
             } else if (box.gridX === line.lineX && box.gridY > line.lineY && box.gridY < line.lineY + line.height) {
               box.gridStatus = 1;
               line.complete = "complete";
-            } else if (box.gridY === line.lineY && box.gridX < line.lineX && box.gridX > line.lineX + line.width) {
+            } else if (box.gridY === line.lineY && box.gridX < line.lineX && box.gridX > line.lineX + line.width - line.gridHeight) {
               box.gridStatus = 1;
               line.complete = "complete";
             } else if (box.gridY === line.lineY && box.gridX > line.lineX && box.gridX < line.lineX + line.width) {
@@ -720,7 +720,7 @@ const getDistance = (x1,y1, x2, y2) => {
   return Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
 };
 
-let startingBallCount = 3;
+let startingBallCount = 1;
 let level = 1;
 let ballCount;
 ballCount = startingBallCount;
