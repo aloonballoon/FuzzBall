@@ -10,15 +10,6 @@ body {
   position: relative;
 }
 
-img {
-  position: absolute;
-  left: 30%;
-  width: 50px;
-  height: 50px;
-  display: none;
-  /* background-color: green; */
-}
-
 header {
   height: auto;
   width: 100%;
@@ -74,17 +65,12 @@ header {
   align-items: center;
 }
 
-.links-footer {
-  width: 30%;
-  display: flex;
-  justify-content: space-between;
-}
-
 canvas {
   background-color: rgb(169,169,169, 0.5);
   border: 1px solid black;
   height: 600px;
   width: 900px;
+  border-color: rgb(169,169,169, 0.5);
 }
 
 .canvas-stats-div {
@@ -94,6 +80,7 @@ canvas {
 }
 
 .stats-span {
+  height: 40px;
   width: 900px;
   display: flex;
   flex-direction: row;
@@ -107,8 +94,6 @@ canvas {
   color: red;
   padding: 10px;
 }
-
-
 
 .directions-contacts-article {
  height: auto;
@@ -153,6 +138,7 @@ canvas {
   color: white;
   font-family: alien;
   margin-bottom: 30px;
+  margin-top: 20px;
   font-size: 40px;
   font-weight: bolder;
 }
@@ -163,8 +149,19 @@ canvas {
 
 .links-footer {
   margin-top: 30px;
+  color: white;
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
+  width: 300px;
+}
+
+.author-footer {
+  color: white;
+}
+
+.alan-uraz-image {
+  width: 60px;
+  height: 60px;
 }
 
 .linkedin-image {
@@ -193,16 +190,42 @@ canvas {
 .contact-ul {
   margin-top: 40px;
 }
+
 .contact-ul li {
   margin-top: 15px;
   margin-bottom: 15px;
   color: white;
-  font-size: 20px;
+  font-size: 0px;
 }
 
-::-webkit-scrollbar {
-  width: 0px;
-  background: transparent;
+.linkedin-image {
+  width: 60px;
+  height: 50px;
+  cursor: pointer;
+}
+
+.github-image {
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+}
+
+.person-image {
+  width: 30px;
+  height: 30px;
+}
+
+.angel-list-image {
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+}
+
+.contacts-footer {
+  margin-top: 50px;
+  width: 400px;
+  display: flex;
+  justify-content: space-between;
 }
 
 
