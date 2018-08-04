@@ -33,12 +33,10 @@ let gridId = 0;
 let grid = [];
 
 
-canvas.addEventListener('mousemove', (event) => {
-  let x = event.x;
-  let y = event.y;
+canvas.addEventListener('click', (event) => {
+  let x = event.offsetX;
+  let y = event.offsetY;
 
-  x -= canvas.offsetLeft;
-  y -= canvas.offsetTop;
   mouse.x = x;
   mouse.y = y;
 });
@@ -720,7 +718,7 @@ const getDistance = (x1,y1, x2, y2) => {
   return Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
 };
 
-let startingBallCount = 1;
+let startingBallCount = 3;
 let level = 1;
 let ballCount;
 ballCount = startingBallCount;
