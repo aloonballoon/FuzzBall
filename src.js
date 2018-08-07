@@ -852,6 +852,7 @@ const blackScreen = () => {
 };
 
 const calculateArea = () => {
+  debugger
   percentArea =  Math.floor(claimedArea / totalArea * 100);
 };
 
