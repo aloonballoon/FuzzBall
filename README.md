@@ -1,4 +1,4 @@
-FuzzBall is a divide and conquer game mimicing the Windows 95 game, JezzBall, that begins with two balls bouncing in a rectangular space. The purpose of the game is to draw lines and divide the balls apart, claiming as much of the negative space as possible within the line boundaries where no balls are present (reaching the target percentage of claimed area).
+FuzzBall is a divide and conquer game mimicking the Windows 95 game, JezzBall, that begins with two balls bouncing in a rectangular space. The purpose of the game is to draw lines and divide the balls apart, claiming as much of the negative space as possible within the line boundaries where no balls are present (reaching the target percentage of claimed area).
 
 **How it Works**
 
@@ -56,5 +56,3 @@ bfs() {
 * Color themes to improve use aesthetic and customization
 * Varying game modes: Classic, Arcade (Choose difficulty level, speed, number of balls)
 * Testing suite so any new changes can verify correct working fundamentals of the game
-
-
