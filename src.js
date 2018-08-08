@@ -104,7 +104,7 @@ const createLines = () => {
           lightsaberSound.play();
 
         }
-      } else if (mouse.direction === 'horizontal') {
+      } else if (mouse.direction === 'horizontal' && box.gridStatus === 0) {
           if (mouse.x > box.gridX && mouse.x < box.gridHeight + box.gridX && mouse.y > box.gridY && mouse.y < box.gridY + box.gridHeight) {
             const line1 = new Line(box.gridX, box.gridY, mouse.direction, box.gridHeight, "right", pairId, "moving", lineId);
             lines.push(line1);
@@ -852,7 +852,6 @@ const blackScreen = () => {
 };
 
 const calculateArea = () => {
-  debugger
   percentArea =  Math.floor(claimedArea / totalArea * 100);
 };
 
