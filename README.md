@@ -16,7 +16,7 @@ Clicking the cursor emits two lines from its point. If the lines touch a the gam
 * Change line orientation (vertical and horizontal) with right mouse-click, emit line with left mouse-click
 
 JavaScript code snippet for Breadth-First Search algorithm to flag grid nodes isolated from bouncing balls
-```
+```JavaScript
 bfs() {
 
     let currentGrid = this;
@@ -43,11 +43,13 @@ bfs() {
 
 ```
 
-**WireFrame**
+**Future Ideas**
 
-The display will include the main board where the balls will bounce within the confines of the wall. The use can click their mouse anywhere inside the board and it will emit two opposing lines in order to block off the balls. Directions on the left-hand side.
-
-![WireFrame](images/wireframe.png)
+* Half-lines. Entire line is not eliminated if a ball only hits one side of it. Will create better strategizing for harder levels
+* Leader table
+* Color themes to improve use aesthetic and customization
+* Varying game modes: Classic, Arcade (Choose difficulty level, speed, number of balls)
+* Testing suite so any new changes can verify correct working fundamentals of the game
 
 **Technologies**
 
