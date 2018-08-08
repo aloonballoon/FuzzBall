@@ -8,15 +8,15 @@ Clicking the cursor emits two lines from its point. If the lines touch a the gam
 
 **Functionality & MVP**
 
-* Autocalculate the amount of space left, in order to determine when to move on to the next level
 * Breadth-First Search (BFS) in order to identify grid nodes that should be "claimed" (a.k.a. no ball within bounds). More robust of a method than determing based on line polygonal shape permutations
+* Autocalculate the amount of space left, in order to determine when to move on to the next level
 * Ball, wall, and line collision detection
 * Realistic ball-to-ball collision detection mimics two-dimensional, two-body elastic collisions, with correct rebound angles and velocity transfer
 * Each level up increases the ball count by one, increases player lives by one
 * Change line orientation (vertical and horizontal) with right mouse-click, emit line with left mouse-click
 
 JavaScript code snippet for Breadth-First Search algorithm to flag grid nodes isolated from bouncing balls
-```
+```JavaScript
 bfs() {
 
     let currentGrid = this;
@@ -43,15 +43,18 @@ bfs() {
 
 ```
 
-**WireFrame**
-
-The display will include the main board where the balls will bounce within the confines of the wall. The use can click their mouse anywhere inside the board and it will emit two opposing lines in order to block off the balls. Directions on the left-hand side.
-
-![WireFrame](images/wireframe.png)
-
 **Technologies**
 
 * JavaScript for the runtime code
 * HTML Canvas for gameplay simulations
+
+
+**Future Ideas**
+
+* Half-lines. Entire line is not eliminated if a ball only hits one side of it. Will create better strategizing for harder levels
+* Leader table
+* Color themes to improve use aesthetic and customization
+* Varying game modes: Classic, Arcade (Choose difficulty level, speed, number of balls)
+* Testing suite so any new changes can verify correct working fundamentals of the game
 
 
